@@ -21,8 +21,8 @@ var Spelling = {
 		Spelling.$suggestFoot = $(
 		'<div id="suggestfoot" class="foot">'+
 			'<a title="ignore word" href="javascript:;" onmousedown="Spelling.ignore()">Ignore word</a>'+
-			'<a title="ignore all words" href="javascript:;" onmousedown="Spelling.ignoreAll()">Ignore all</a>'
-			+(Spelling.engine == "pspell"?'<a title="ignore word forever (add to dictionary)" href="javascript:;" onmousedown="Spelling.addToDictionary()">Ignore forever</a>':'')
+			'<a title="ignore all words" href="javascript:;" onmousedown="Spelling.ignoreAll()">Ignore all</a>'+
+			(Spelling.engine == "pspell"?'<a title="ignore word forever (add to dictionary)" href="javascript:;" onmousedown="Spelling.addToDictionary()">Ignore forever</a>':'')
 		+'</div>');
 		Spelling.$suggestBox = 
 		$('<div id="suggestbox" class="suggestDrop"></div>')
