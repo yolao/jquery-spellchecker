@@ -1,0 +1,22 @@
+/* Default Button */
+a.button, a.button:visited {color:#111;text-decoration:none;margin-top:4px;outline:none}
+a.button:hover {}
+a.button:hover .right {background-position:0 -92px;}
+a.button:hover .center {background-position:0 -69px;text-decoration:underline}
+a.button:hover .left {background-position:0 -115px;margin:0}
+.button span {cursor:pointer;background-image:url(/img/nicebutton/button_default.jpg);background-repeat:no-repeat;}
+.button .left {background-position:0 -46px;width:10px;display:block;float:left;height:23px;}
+.button .center {background-repeat:repeat-x;display:block;float:left;height:21px;padding-top:2px;line-height:1.4em}
+.button .right {background-position:0 -23px;display:block;float:left;height:23px;width:10px;margin:0}
+.button .clear {clear:left;overflow:hidden;height:0px}
+.left {float:left}
+.right {float:right;margin-left:8px}
+
+/* Inline Button */
+a.inline-button, a.inline-button:visited {color:#111;margin-right:2px;text-decoration:none;background:url(/img/nicebutton/button_inline.jpg) no-repeat right center;padding:0.3em 0px 0.4em 0px;outline:none}
+a.inline-button:hover span {text-decoration:underline}
+
+.inline-button span {background:url(/img/nicebutton/button_inline.jpg) no-repeat left center;padding:0.3em 10px 0.4em 12px}
+.
+.inline-button .clear {clear:left;overflow:hidden;height:0px}
+
