@@ -61,7 +61,7 @@ var Spelling = {
 				}
 				Spelling.$container.html(html);	
 				// execute callback function, if any
-				callback != undefined && callback(); 
+				(callback != undefined) && callback(); 
 			}
 		});
 	},
@@ -104,9 +104,7 @@ var Spelling = {
 				// build suggest word list
 				Spelling.$suggestWords.empty();
 				for(var i=0;i<(json.length<5?json.length:5);i++) {
-					Spelling.$suggestWords.append('\
-						<a href="javascript:;" '+(!i?'class="first" ':'')+'onmousedown="Spelling.replace(this)">'+json[i]+'</a>\
-					');
+					Spelling.$suggestWords.append('<a href="javascript:;" '+(!i?'class="first" ':'')+'onmousedown="Spelling.replace(this)">'+json[i]+'</a>');
 				}								
 				// no suggestions
 				!i && Spelling.$suggestWords.append('<em>(no suggestions)</em>');
