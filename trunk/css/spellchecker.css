@@ -77,8 +77,10 @@ span.badspelling {
 	outline:none
 } 
 #content {
-	background:url(..//img/form_bg.gif) repeat-x 0 0;
+	background:url(../img/form_bg.gif) repeat-x 0 0;
 	border:1px solid #888;
+	border-right:1px solid #ccc;
+	border-bottom:1px solid #ccc;
 	padding:10px 20px;
 	margin-bottom:5px;
 }
