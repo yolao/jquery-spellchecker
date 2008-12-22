@@ -4,7 +4,8 @@
  * Filename:	checkspelling.php
  * Project:	http://jquery-spellchecker.googlecode.com
  * Developer:	Richard Willis
- * 
+ * Notes:	PHP5+  
+ *
  */
 
 
