@@ -82,19 +82,20 @@ var Spelling = {
 		
 		Spelling.$suggestWords.empty().append('<em>Loading..</em>');
 		var offset = Spelling.$curWord.offset();
+
 		// show the loading message
 		Spelling.$suggestBox
 		.css({
 			width : Spelling.$suggestBox.outerWidth() < Spelling.$curWord.outerWidth() ? Spelling.$curWord.innerWidth()+"px" : "auto",
 			left : offset.left+"px",
 			top : (offset.top + Spelling.$curWord.outerHeight()) + "px"
-		}).show();		
+		}).fadeIn(200);		
 
 		Spelling.suggestShow = true;		
 		setTimeout(function(){
 			$("body").bind("click", function(){
 				$(this).unbind();
-				!Spelling.suggestShow && Spelling.$suggestBox.hide();				
+				!Spelling.suggestShow && Spelling.$suggestBox.fadeOut(250);				
 			});
 		}, 1);
 		setTimeout(function(){
