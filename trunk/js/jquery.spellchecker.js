@@ -55,11 +55,17 @@ var Spelling = {
 					alert('There are no incorrectly spelt words :)');
 				} else {
 					// highlight bad words
+					$text = "";
 					for(var badword in json) {
-						html = html.replace(
-							new RegExp("\\b("+(Spelling.engine=='pspell'?json[badword]:text.substr(json[badword][0], json[badword][1]))+")\\b"), 
-							'<span onclick=\"Spelling.suggest(this);\" class=\"badspelling\">$1</span>'
-						);
+						var replaceWord = Spelling.engine=='pspell' ? json[badword] : text.substr(json[badword][0], json[badword][1]);
+						// we only want unique word replacements
+						if (!new RegExp(replaceWord, "i").test($text)) {
+							$text += replaceWord+" ";
+							html = html.replace(
+								new RegExp("\\b("+replaceWord+")\\b", "ig"), 
+								'<span onclick=\"Spelling.suggest(this);\" class=\"badspelling\">$1</span>'
+							);
+						}
 					}							
 				}
 				Spelling.$container.html(html);	
@@ -131,7 +137,7 @@ var Spelling = {
 	// ignore all words in this chunk of text
 	ignoreAll : function() {
 		$("span.badspelling", Spelling.$container).each(function(){
-			this.innerHTML == Spelling.$curWord.html() && $(this).after(this.innerHTML).remove(); // remove anchor
+			(new RegExp(Spelling.$curWord.html(), "i").test(this.innerHTML)) && $(this).after(this.innerHTML).remove(); // remove anchor
 		});
 	},
 	
@@ -158,6 +164,7 @@ var Spelling = {
 	// remove spell check formatting
 	remove : function() {
 		$("span.badspelling", Spelling.$container).each(function(){
+			console.debug(this.innerHTML);
 			$(this).after(this.innerHTML).remove()
 		});
 	}
