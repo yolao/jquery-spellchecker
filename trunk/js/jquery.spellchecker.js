@@ -164,7 +164,6 @@ var Spelling = {
 	// remove spell check formatting
 	remove : function() {
 		$("span.badspelling", Spelling.$container).each(function(){
-			console.debug(this.innerHTML);
 			$(this).after(this.innerHTML).remove()
 		});
 	}
