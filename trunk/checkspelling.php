@@ -13,10 +13,14 @@
 
 $Spelling = new Spelling($_GET['engine']);
 
-
 class Spelling {
 
-	public function spelling($rpc="google") {
+	// site specific personal dictionary
+	protected $pspell_personal_dictionary = '/srv/projects/jquery.ui.localdomain/dictionary/custom.pws';
+	// pspell language
+	protected $pspell_lang = 'en';
+
+	public function __construct($rpc="google") {
 		!isset($_GET['noheaders']) and $this->sendHeaders();
 		method_exists($this, $rpc) and $this->$rpc();
 	}
@@ -27,11 +31,8 @@ class Spelling {
 			$$key = stripslashes(trim($value));
 		}
 		
-		// site specific personal dictionary
-		$personal_dictionary = '/srv/projects/jquery.ui.localdomain/dictionary/custom.pws';
-
 		// load the dictionary
-		$pspell_link = @pspell_new_personal($personal_dictionary, 'en') or die('PSpell error');
+		$pspell_link = @pspell_new_personal($this->pspell_personal_dictionary, $this->pspell_lang) or die('PSpell error');
 		
 		// return suggestions
 		if (isset($suggest)) {
@@ -50,7 +51,7 @@ class Spelling {
 		// add word to personal dictionary
 		elseif (isset($addtodictionary)) {
 			$pspell_config = pspell_config_create('en');
-			@pspell_config_personal($pspell_config, $personal_dictionary) or die('can\'t find dictionary');
+			@pspell_config_personal($pspell_config, $this->pspell_personal_dictionary) or die('can\'t find pspell dictionary');
 			$pspell_link = pspell_new_config($pspell_config);
 			@pspell_add_to_personal($pspell_link, strtolower($addtodictionary)) or die('You can\'t add a word to the dictionary that contains any punctuation.');
 			pspell_save_wordlist($pspell_link);
@@ -68,7 +69,7 @@ class Spelling {
 		// return badly spelt words from a chunk of text	
 		if (isset($text)) {
 			$words = array();
-			foreach($matches = $this->getMatches(stripslashes($text)) as $word) {
+			foreach($matches = $this->getGoogleMatches(stripslashes($text)) as $word) {
 				// position & length of badly spelt word
 				$words[] = array($word[1], $word[2]);
 			}
@@ -76,13 +77,12 @@ class Spelling {
 		}
 		// return suggestions for a specific word
 		else if (isset($suggest)) {
-			$matches = $this->getMatches($suggest) and 
+			$matches = $this->getGoogleMatches($suggest) and 
 				die(json_encode(explode("\t", utf8_encode(html_entity_decode($matches[0][4])))));
 		}	
 	}
 	
-	private static function getMatches($str) {
-	
+	private static function getGoogleMatches($str) {
 		$lang = 'en';
 		$server = 'www.google.com';
 		$port = 443;
