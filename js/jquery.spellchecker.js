@@ -19,10 +19,11 @@ var Spelling = {
 		Spelling.$container = $("#"+containerID);	
 		Spelling.$suggestWords = $('<div id="suggestwords"></div>');
 		Spelling.$suggestFoot = $(
-		'<div id="suggestfoot" class="foot">'+
+			'<div id="suggestfoot" class="foot">'+
 			'<a title="ignore word" href="javascript:;" onmousedown="Spelling.ignore()">Ignore word</a>'+
 			'<a title="ignore all words" href="javascript:;" onmousedown="Spelling.ignoreAll()">Ignore all</a>'+
-			(Spelling.engine == "pspell"?'<a title="ignore word forever (add to dictionary)" href="javascript:;" onmousedown="Spelling.addToDictionary()">Ignore forever</a>':'')
+			(Spelling.engine=="pspell"?
+			'<a title="ignore word forever (add to dictionary)" href="javascript:;" onmousedown="Spelling.addToDictionary()">Ignore forever</a>':'')
 		+'</div>');
 		Spelling.$suggestBox = 
 		$('<div id="suggestbox" class="suggestDrop"></div>')
@@ -42,21 +43,23 @@ var Spelling = {
 			.replace(/^[^\w]|[^\w]+[^\w]|\n|\t|\s{2,}/g, " "));
 
 		$.ajax({
-			type: "POST",
-			url: Spelling._url,
-			data: 'text='+text,
-			dataType: "json",
+			type : "POST",
+			url : Spelling._url,
+			data : 'text='+text,
+			dataType : "json",
 			error : function(XHR, status, error) {
 				alert("There was an error processing the request.\n\n"+XHR.responseText);
 			},
-			success: function(json){
+			success : function(json){
 				if (!json.length) {
 					alert('There are no incorrectly spelt words :)');
-				}
-				else {
+				} else {
 					// highlight bad words
 					for(var badword in json) {
-						eval("html = html.replace(/\\b("+(Spelling.engine=='pspell'?json[badword]:text.substr(json[badword][0], json[badword][1]))+")\\b/g, '<span onclick=\"Spelling.suggest(this);\" class=\"badspelling\">$1</span>')");
+						html = html.replace(
+							new RegExp("\\b("+(Spelling.engine=='pspell'?json[badword]:text.substr(json[badword][0], json[badword][1]))+")\\b"), 
+							'<span onclick=\"Spelling.suggest(this);\" class=\"badspelling\">$1</span>'
+						);
 					}							
 				}
 				Spelling.$container.html(html);	
@@ -93,14 +96,14 @@ var Spelling = {
 		}, 2);		
 		
 		$.ajax({
-			type: "POST",
-			url: Spelling._url,
-			data: "suggest="+wordobj.innerHTML,
-			dataType: "json",
+			type : "POST",
+			url : Spelling._url,
+			data : "suggest="+wordobj.innerHTML,
+			dataType : "json",
 			error : function(XHR, status, error) {
 				alert("There was an error processing the request.\n\n"+XHR.responseText);
 			},
-			success: function(json){			
+			success : function(json){			
 				// build suggest word list
 				Spelling.$suggestWords.empty();
 				for(var i=0;i<(json.length<5?json.length:5);i++) {
@@ -136,10 +139,10 @@ var Spelling = {
 	addToDictionary : function() {
 		confirm("Are you sure you want to add \""+Spelling.$curWord.html()+"\" to the dictionary?") &&
 		$.ajax({
-			type: "POST",
-			url: Spelling._url,
-			data: 'addtodictionary='+Spelling.$curWord.html(),
-			dataType: "json",
+			type : "POST",
+			url : Spelling._url,
+			data : 'addtodictionary='+Spelling.$curWord.html(),
+			dataType : "json",
 			error : function(XHR, status, error) {
 				alert("There was an error processing the request.\n\n"+XHR.responseText);
 			},
