@@ -64,5 +64,12 @@ code.method { font-size: 150%; display: block; margin-top: 20px }
 code.inline { background-color: #ffc }
 
 /* Common */
+.hidden {display:none;}
 .strike {text-decoration:line-through;}
 .loading {background:url(../img/ajax-loader.gif) no-repeat center center;padding:0.5em 8px}
+.browser-icons a, .browser-icons a:visited {display:block;float:left;width:24px;height:20px;overflow:hidden;white-space:nowrap;margin-right:4px;text-decoration:none;border:1px solid #ccc;border-right:1px solid #999;border-bottom:1px solid #999;background:transparent url(../img/browser_icons_bg.jpg) no-repeat center top;}
+.browser-icons a:hover {border:1px solid #555;}
+a.explorer, a.explorer:visited {background-position:center -19px;}
+a.safari, a.safari:visited {background-position:center -40px;}
+a.opera, a.opera:visited {background-position:center -60px;}
+a.chrome, a.chrome:visited {background-position:center -80px;}
