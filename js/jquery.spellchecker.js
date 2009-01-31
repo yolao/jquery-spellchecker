@@ -94,8 +94,7 @@ var Spelling = {
 		Spelling.suggestShow = true;		
 		setTimeout(function(){
 			$("body").bind("click", function(){
-				$(this).unbind();
-				!Spelling.suggestShow && Spelling.$suggestBox.fadeOut(250);				
+				Spelling.hideBox(this);
 			});
 		}, 1);
 		setTimeout(function(){
@@ -159,6 +158,7 @@ var Spelling = {
 	
 	// replace incorrectly spelt word with suggestion
 	replace : function(replace) {
+		Spelling.hideBox();
 		Spelling.$curWord.after(replace.innerHTML).remove();
 	},
 	
@@ -167,6 +167,12 @@ var Spelling = {
 		$("span.badspelling", Spelling.$container).each(function(){
 			$(this).after(this.innerHTML).remove()
 		});
+	},
+
+	// hides the suggest box	
+	hideBox : function(box) {
+		box != undefined && $(box).unbind();
+		!Spelling.suggestShow && Spelling.$suggestBox.fadeOut(250);				
 	}
 
 };
