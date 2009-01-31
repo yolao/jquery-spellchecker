@@ -5,41 +5,12 @@
  *
  */
 
-
-/* columns */
-.col-l {
-	width:42%;
-	float:left;
-}
-.col-r {
-	width:55%;
-	float:right;
-	padding-top:4px;
-}
-.strike {
-	text-decoration:line-through;
-}
-
-h2 a, h2 a:visited {
-	outline:none;
-}
-h2 a:hover {
-	color:red;
-}
-
-
-
 /* Spell checker stylying */
 span.badspelling {
 	color:#d70303;
 	text-decoration:none;
 	background:url(../img/spellchecker/bg.gif) repeat-x 100% 100%;
 	cursor:pointer
-}
-#loading {
-	line-height:30px;
-	padding-left:8px;
-	display:none
 }
 .suggestDrop {
 	position:absolute;
@@ -89,8 +60,11 @@ span.badspelling {
 	border:1px solid #888;
 	border-right:1px solid #ccc;
 	border-bottom:1px solid #ccc;
-	padding:10px 20px;
-	margin-bottom:5px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding:0em 1em;
+	font-size:86%;
+	margin-bottom:10px;
 }
 
 .browser-icons a, .browser-icons a:visited {
