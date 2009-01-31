@@ -19,8 +19,8 @@ $(function(){
 	
 	// cache images
 	var images = [
-		[,"../img/spellchecker/shadow.png"],
-		[,"../img/ajax-loader.gif"]
+		[,"img/spellchecker/shadow.png"],
+		[,"img/ajax-loader.gif"]
 	];
 	for(var i=0;i<images.length;i++){
 		images[i][0] = new Image();
