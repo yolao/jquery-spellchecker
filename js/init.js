@@ -1,6 +1,6 @@
 /*
  *
- * Filename:	common.js
+ * Filename:	init.js
  * Developer:	Richard Willis
  *
  */
@@ -17,13 +17,31 @@ $(function(){
 		catch(e){};
 	})();
 	
+	// cache images
+	var images = [
+		[,"../img/spellchecker/shadow.png"],
+		[,"../img/ajax-loader.gif"]
+	];
+	for(var i=0;i<images.length;i++){
+		images[i][0] = new Image();
+		images[i][0].src = images[i][1];
+	}
+	
+	// initiate the tabs
+        $("#main, #tabs").tabs();
+
+	// accordian links toggle
+	$("a.accordian").each(function(){
+		$(this).click(function(e){
+			e.preventDefault();
+			$("#"+this.href.replace(/[^#]+#/, '')).animate({height:"toggle",opacity:"toggle"}, 560, "jswing");
+		});
+	});
+
+	
 	// initiate the spell checker
 	Spelling.init("content");
 			
-	// preload the speller shadow imagecd 
-	var loader = new Image();
-	loader.src = "img/spellchecker/shadow.png";
-		
 	// check the spelling
 	$("#check").click(function(e){
 		e.preventDefault();
@@ -45,10 +63,6 @@ $(function(){
 		Spelling.remove();
 	});
 
-
-	// initiate the tabs
-        $("#main, #tabs").tabs();
 });
-			
 
 /* end of file */
