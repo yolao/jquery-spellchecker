@@ -2,33 +2,29 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<title>jQuery Spell Checker</title>
-	<link rel="stylesheet" type="text/css" media="screen" href="css/jq.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/ui.core.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/ui.theme.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/ui.tabs.css" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/smoothness/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/spellchecker.css" />
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
-	<!--<script type="text/javascript" src="js/jquery.js"></script>-->
-	<script type="text/javascript" src="js/jquery.ui.js"></script>
-	<script type="text/javascript" src="js/jquery.ui.core.js"></script>
-	<script type="text/javascript" src="js/jquery.spellchecker.js"></script>
-	<script type="text/javascript" src="js/init.js"></script>
 </head>
 <body>
-	<div>
-		<a id="logo" href="http://jquery.com" title="Powered By jQuery"></a>
-	</div>
+	<div id="wrapper">
+		<div id="header" class="ui-tabs ui-widget ui-widget-content">
+			<a id="logo" href="http://jquery.com" title="Powered By jQuery"></a>
 	
-	<h1 id="banner">
-		jQuery Spell Checker
-	</h1>
+			<h1 id="banner">
+				jQuery Spell Checker
+			</h1>
+			<ul id="nav" class="ui-tabs ui-widget-header ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-corner-all">
+				<li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active">
+					<a href="#">Overview</a>
+				</li>
+			</ul>
+		</div>
 
-	<div id="main">
-		<ul id="nav" class="ui-tabs ui-widget-header">
-			<li><a href="#overview">Overview</a></li>
-		</ul>
+		<div id="body" class="clearfix ui-widget-content ui-tabs ui-widget ui-corner-all">
 
-		<div id="overview" class="tabContent">
 			<h2>
 				Spell Checker Example 
 				<br/><small style="font-size:70%">Using google's service</small>
@@ -66,8 +62,11 @@
 				<div id="source" class="hidden">
 					<ul>
 						<li>
-							<a href="http://jquery-spellchecker.googlecode.com/svn/trunk/js/jquery.spellchecker.js">jquery.spellchecker.js</a> 
+							<a href="http://code.google.com/p/jquery-spellchecker/source/browse/trunk/js/jquery.spellchecker.js">jquery.spellchecker.js</a> 
 							(Uncompressed &amp; commented)
+						</li>
+						<li>
+							<a href="http://code.google.com/p/jquery-spellchecker/source/browse/trunk/checkspelling.php">checkspelling.php</a>
 						</li>
 					</ul>
 				</div>
@@ -75,7 +74,7 @@
 				<h2><a href="#info" class="accordian">Info/Contact</a></h2>
 				<div id="info" class="hidden">
 					<ul>
-						<li>
+						<li class="hidden">
 							<p>Tested on all major browsers:</p>
 		
 							<p class="browser-icons">
@@ -105,39 +104,57 @@
 			</div>
 			
 
-			<div class="col-l">
-				<div id="tabs">
-					<ul>
-						<li><a href="#html-example">HTML Example</a></li>
-						<li><a href="#textarea-example">Textarea Example</a></li>
-					</ul>
-					<div id="html-example">
-						<div id="content">
-							<p>
-								"But I must explain to you how all this mistaken idea of denounncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master builder of human happiness. Noo one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequencse's that are extremely painful.
-							</p>
-							<p>
-								Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying caonsequences, or one who avoids a pain that produces no resultant pleasure?"
-							</p>
-							<p>
-								"On the other hand, we anounce with righteous indignations's and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that arre Arre bound to ensue; and equal blame belongs to those who faile in their duty through weakness of will, which is the same as saying through shrinking from toil and pain.
-							</p>
-						</div>
-						<div>
-							<a href="#check" id="check" class="ui-state-default ui-corner-all ui-button">
-								Check Spelling
-							</a>&nbsp;
-							<span class="loading hidden">&nbsp;</span>
-						</div>
+			<div id="tabs" class="col-l">
+				<ul>
+					<li><a href="#html-example">HTML Example</a></li>
+					<li><a href="#textarea-example">Textarea Example</a></li>
+				</ul>
+				<div id="html-example">
+					<div id="content">
+						<p>
+							"But I must explain to you how all this mistaken idea of denounncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master builder of human happiness. Noo one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequencse's that are extremely painful.
+						</p>							<p>
+							Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying caonsequences, or one who avoids a pain that produces no resultant pleasure?"
+						</p>
+						<p>
+							"On the other hand, we anounce with righteous indignations's and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that arre Arre bound to ensue; and equal blame belongs to those who faile in their duty through weakness of will, which is the same as saying through shrinking from toil and pain.
+						</p>
 					</div>
-					<div id="textarea-example">
-						Coming Soon!
+					<div>
+						<a href="#check" id="check-html" class="ui-state-default ui-corner-all ui-button">
+							Check Spelling
+						</a>&nbsp;
+						<span class="loading hidden">&nbsp;</span>
 					</div>
-					
 				</div>
+				<div id="textarea-example">
+					<p>
+						<label for="text-content">
+							Add your own text and check the spelling.
+						</label>
+					</p>
+					<textarea id="text-content" rows="5" cols="25">But I must explain to you how all this mistaken idea of denounncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master builder of human happiness. Noo one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequencse's that are extremely painful.
+
+Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying caonsequences, or one who avoids a pain that produces no resultant pleasure?"
+
+"On the other hand, we anounce with righteous indignations's and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that arre Arre bound to ensue; and equal blame belongs to those who faile in their duty through weakness of will, which is the same as saying through shrinking from toil and pain.</textarea>
+					<div>
+						<a href="#check" id="reset-textarea" class="ui-state-default ui-corner-all ui-button right" onclick="$('#text-content').val('').focus()">
+							Reset
+						</a>
+						<a href="#check" id="check-textarea" class="ui-state-default ui-corner-all ui-button">
+							Check Spelling
+						</a>&nbsp;
+						<span class="loading hidden">&nbsp;</span>
+					</div>
+				</div>
+			</div>
 	
-			</div>	
 		</div>
 	</div>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="js/jquery.spellchecker.js"></script>
+	<script type="text/javascript" src="js/init.js"></script>
 </body>
 </html>

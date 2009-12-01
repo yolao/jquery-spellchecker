@@ -60,6 +60,10 @@
 		
 			if (node == "TEXTAREA") {
 				this.checkTextarea(function(text, json) {
+					if (json.result) {
+						callback(1);
+						return;
+					}
 					if (!self.elements.$badwords) {
 						self.elements.$badwords = $("<div></div>").attr("id", "spellcheck-badwords");
 						$(self.domObj).after(self.elements.$badwords);
@@ -75,11 +79,16 @@
 					$(".spellcheck-badspelling", self.elements.$badwords).click(function(){
 						self.suggest(this);
 					}).after("<span class=\"spellcheck-sep\">,</span>");
+					$(".spellcheck-sep:last", self.elements.$badwords).remove();
 					(callback) && callback();
 				});
 			} else {
 				var html = $(this.domObj).html();
 				this.checkHTML(function(text, json){
+					if (json.result) {
+						callback(1);
+						return;
+					}
 					var replace = "";
 					// highlight bad words
 					for(var badword in json) {
@@ -120,6 +129,27 @@
 			});
 		},
 
+		// sends post request to check a chunk of text, return JSON object of incorrectly spelt words
+		checkText : function(text, callback){
+			var self = this,
+			xhr = $.ajax({
+				type : "POST",
+				url : this.options.url,
+				data : 'text='+text,
+				dataType : "json",
+				error : function(XHR, status, error) {
+					alert("Sorry, there was an error processing the request.");
+				},
+				success : function(json){
+					if (!json.length) {
+						json.result = 1;	
+					}
+					(callback) && callback(json);
+				}
+			});
+			return xhr;
+		},
+		
 		// gets a list of suggested words, appends to the suggestbox and shows the suggestbox
 		suggest : function(domObj){
 
@@ -163,28 +193,6 @@
 			});
 		},
 
-		// sends post request to check a chunk of text, return JSON object of incorrectly spelt words
-		checkText : function(text, callback){
-			var self = this,
-			xhr = $.ajax({
-				type : "POST",
-				url : this.options.url,
-				data : 'text='+text,
-				dataType : "json",
-				error : function(XHR, status, error) {
-					alert("Sorry, there was an error processing the request.");
-				},
-				success : function(json){
-					if (!json.length) {
-						$(".loading").hide();
-						alert('There are no incorrectly spelt words :)');
-					} else {
-						(callback) && callback(json);
-					}
-				}
-			});
-			return xhr;
-		},
 
 		// sends post request to get single word suggestions, return JSON object of suggested words
 		getWordSuggestions : function(text, callback) {
@@ -234,17 +242,25 @@
 		
 		// remove spelling formatting from word to ignore in original element
 		ignore : function() {
-			this.$curWord.after(this.$curWord.html()).remove();
 			this.hideBox();
+			if (this.type == "textarea") {
+				this.$curWord.remove();
+			} else {
+				this.$curWord.after(this.$curWord.html()).remove();
+			}
 		},
 		
 		// remove seplling formatting from all words to ignore in original element
 		ignoreAll : function() {
 			var self = this;
-			$("span.spellcheck-badspelling", self.domObj).each(function(){
-				(new RegExp(self.$curWord.html(), "i").test(this.innerHTML)) && $(this).after(this.innerHTML).remove(); // remove anchor
-			});
 			this.hideBox();
+			if (this.type == "textarea") {
+				this.$curWord.remove();
+			} else {
+				$("span.spellcheck-badspelling", self.domObj).each(function(){
+					(new RegExp(self.$curWord.html(), "i").test(this.innerHTML)) && $(this).after(this.innerHTML).remove(); // remove anchor
+				});
+			}
 		},
 		
 		// add word to personal dictionary (pspell only)
