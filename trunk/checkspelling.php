@@ -73,12 +73,15 @@ class Spelling {
 				// position & length of badly spelt word
 				$words[] = array($word[1], $word[2]);
 			}
-			die(json_encode($words));
+			exit(json_encode($words));
 		}
 		// return suggestions for a specific word
 		else if (isset($suggest)) {
-			$matches = $this->getGoogleMatches($suggest) and 
-				die(json_encode(explode("\t", utf8_encode(html_entity_decode($matches[0][4])))));
+			$matches = 
+			$this->getGoogleMatches($suggest) and
+			$matches[0][4] and 
+			exit(json_encode(explode("\t", utf8_encode(html_entity_decode($matches[0][4]))))) or
+			exit(json_encode(array()));
 		}	
 	}
 	
@@ -144,11 +147,10 @@ class Spelling {
 	}
 	
 	private static function sendHeaders() {
-		header('Content-type: text/json');				// data type
+		header('Content-type: application/json');			// data type
 		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");		// no cache
 		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");	// no cache
 		header("Cache-Control: no-store, no-cache, must-revalidate");	// no cache
 		header("Cache-Control: post-check=0, pre-check=0", false);	// no cache
 	}
 }
-?>
