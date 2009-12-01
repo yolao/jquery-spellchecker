@@ -47,22 +47,20 @@ $(function(){
 		e.preventDefault();
 		if ($(this).html().match(/^remove/i)) {
 			$("#content").spellcheck("remove");
-			$(".center", this).html("Check Spelling");
+			$(this).html("Check Spelling");
 		} else {
 			$(".loading").show();
-			var button = this;
-			$("#content").spellcheck();
-			$("#content").spellcheck("check");
-			//.check($("#content"), function(){
-				$(".center", button).html("Remove Spelling");			
+			var self = this;
+			$("#content").spellcheck("check", function(){
+				$(self).html("Remove Spelling");			
 				$(".loading").hide();
-			//});					
+			});					
 		}
 	});	
 	// check the spelling on a textarea
 	$("#check-textarea").click(function(e){
 		e.preventDefault();
-		//$(".loading").show();
+		$(".loading").show();
 		$("#text-content").spellcheck("check", function(){
 			$(".loading").hide();
 		});

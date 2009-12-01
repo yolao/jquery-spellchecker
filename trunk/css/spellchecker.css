@@ -55,6 +55,14 @@ span.spellcheck-badspelling {
 .suggestDrop .foot a, .suggestDrop .foot a:visited {
 	outline:none;
 } 
+#spellcheck-badwords {
+	margin-bottom: 2em;
+	margin-top: -0.5em;
+	font-size: 12px;
+}
+#spellcheck-badwords .spellcheck-badspelling {
+
+}
 #content {
 	background:url(../img/form_bg.gif) repeat-x 0 0;
 	border:1px solid #888;
@@ -112,4 +120,7 @@ a.speller-icon-selected {
 	border-left:1px solid #ccc;
 	border-right:1px solid #ccc;
 	border-bottom:1px solid #ccc;
+}
+.spellcheck-sep {
+	padding-right: 0.5em;
 }
