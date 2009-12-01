@@ -19,8 +19,8 @@
 				if ($(this).data('spellchecker') && $(this).data("spellchecker")[options]){
 					$(this).data("spellchecker")[options](callback);
 				} else {
-					$(this).data('spellchecker', new SpellChecker(this, options.constructor === Object && options || null));
-					(options.constructor == String) && $(this).data("spellchecker")[options](callback);
+					$(this).data('spellchecker', new SpellChecker(this, (options && options.constructor === Object) && options || null));
+					(options && options.constructor == String) && $(this).data("spellchecker")[options](callback);
 				}
 			});
 
@@ -61,7 +61,7 @@
 				$("<div></div>").attr({id: "suggestfoot", class: "foot"})
 				.append(this.elements.$ignoreWord)
 				.append(this.elements.$ignoreAllWords)
-				.append(this.elements.$ignoreWordsForever);
+				.append(this.options.engine == "pspel" ? this.elements.$ignoreWordsForever : false);
 			this.elements.$suggestBox = 
 				$("<div></div>").attr({id: "suggestbox", class: "suggestDrop"})
 				.append(this.elements.$suggestWords)
@@ -98,7 +98,7 @@
 					}
 					$(".spellcheck-badspelling", self.elements.$badwords).click(function(){
 						self.suggest(this);
-					}).after(", ");
+					}).after("<span class=\"spellcheck-sep\">,</span>");
 					(callback) && callback();
 				});
 			} else {
@@ -149,7 +149,10 @@
 				// build suggest word list
 				self.elements.$suggestWords.empty();
 				for(var i=0;i<(json.length<5?json.length:5);i++) {
-					var $replaceWord = $("<a></a>").attr({href: "#",class: (!i?'first':'')}).mousedown(function(){self.replace(domObj, this);}).text(json[i]);
+					var $replaceWord = $("<a></a>")
+						.attr({href: "#",class: (!i?'first':'')})
+						.mousedown(function(){self.replace(domObj, this);})
+						.text(json[i]);
 					self.elements.$suggestWords.append($replaceWord);
 				}								
 				// no suggestions
@@ -216,6 +219,20 @@
 		// replace incorrectly spelt word with suggestion
 		replace : function(domObj, replace) {
 			this.hideBox();
+			switch(this.type) {
+				case "textarea": this.replaceTextbox(domObj, replace); break;
+				case "html" : this.replaceHtml(domObj, replace); break;
+			}
+
+		},
+
+		replaceTextbox : function(domObj, replace){
+			$(domObj).next().remove();
+			$(domObj).remove();
+			$(this.domObj).val($(this.domObj).val().replace(new RegExp(domObj.innerHTML, "i"), replace.innerHTML));
+		},
+
+		replaceHtml : function(domObj, replace){
 			$(domObj).after(replace.innerHTML).remove();
 		},
 		
@@ -253,29 +270,9 @@
 		},
 		
 		// remove spell check formatting
-		removeFormatting : function() {
+		remove : function() {
 			$("span.spellcheck-badspelling", this.domObj).each(function(){
 				$(this).after(this.innerHTML).remove()
-			});
-		},
-
-		// removes all
-		remove : function(speed) {
-			(!speed) && (speed = 100);
-			$("#speller-overlay").fadeOut(speed, function(){
-				var $which = $(this);
-				if ($which.length) {
-					$which_text = $which
-					.html()
-					.replace(/<br\s?\/?>/g, "\n")
-					.replace(/<[^>]+\/?>/g, "");
-					if (Spelling.$container.length && Spelling.$container[0].nodeName.toLowerCase() == "form") {
-						$("textarea", Spelling.$container).each(function(){
-							$(this).val($which_text).fadeIn();
-						});
-					}
-					$(this).remove();
-				}
 			});
 		}
 	};	
