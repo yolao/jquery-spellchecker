@@ -8,171 +8,255 @@
  *
  */
 
-var Spelling = {
+(function($){
 
-	rpc : "checkspelling.php",
-	engine : "google", // pspell || google
-	$container : {}, $curWord : {},	$suggestBox : {}, $suggestWords : {}, $suggestFoot : {}, suggestShow : false,
-	
-	init : function(containerID){
-		Spelling._url = Spelling.rpc+"?engine="+Spelling.engine;
-		Spelling.$container = $("#"+containerID);	
-		Spelling.$suggestWords = $('<div id="suggestwords"></div>');
-		Spelling.$suggestFoot = $(
-			'<div id="suggestfoot" class="foot">'+
-			'<a title="ignore word" href="javascript:;" onmousedown="Spelling.ignore()">Ignore word</a>'+
-			'<a title="ignore all words" href="javascript:;" onmousedown="Spelling.ignoreAll()">Ignore all</a>'+
-			(Spelling.engine=="pspell"?
-			'<a title="ignore word forever (add to dictionary)" href="javascript:;" onmousedown="Spelling.addToDictionary()">Ignore forever</a>':'')
-		+'</div>');
-		Spelling.$suggestBox = 
-		$('<div id="suggestbox" class="suggestDrop"></div>')
-		.append(Spelling.$suggestWords)
-		.append(Spelling.$suggestFoot)
-		.prependTo("body");	
-	},
-
-	// check chunk of text for incorrectly spelt words
-	check : function(callback){
-		Spelling.remove();	
+	$.fn.extend({
 		
-		var 
-			html = Spelling.$container.html(),
-			text = $.trim(Spelling.$container.text()
-			// remove punctuation and special characters
-			.replace(/^[^\w]|[^\w]+[^\w]|\n|\t|\s{2,}/g, " "));
+		spellcheck : function(options){
 
-		$.ajax({
-			type : "POST",
-			url : Spelling._url,
-			data : 'text='+text,
-			dataType : "json",
-			error : function(XHR, status, error) {
-				alert("There was an error processing the request.\n\n"+XHR.responseText);
-			},
-			success : function(json){
-				if (!json.length) {
-					alert('There are no incorrectly spelt words :)');
+			return this.each(function(){
+
+				if ($(this).data('spellchecker') && $(this).data("spellchecker")[options]){
+					$(this).data("spellchecker")[options]();
 				} else {
+					$(this).data('spellchecker', new SpellChecker(this, options));
+				}
+			});
+
+		}
+	});
+
+	var SpellChecker = function(domObj, options) {
+		this.domObj = domObj;
+		this.options = $.extend({
+			rpc: "checkspelling.php",
+			engine: "google" // pspell or google
+		}, options || {});
+		this.options.url = this.options.rpc+"?engine="+this.options.engine;
+		this.elements = {};
+		this.init();
+	};
+
+	SpellChecker.prototype = {
+
+		init : function(){
+			this.createElements();
+		},
+
+		createElements : function(){
+			var self = this;
+			this.elements.$suggestWords = 
+				$("<div></div>").attr({id: "suggestwords"});
+			this.elements.$ignoreWord = 
+				$("<a></a>").attr({ title: "ignore word", href: "#" })
+				.mousedown(function(){self.ignore();}).text("Ignore word");
+			this.elements.$ignoreAllWords = 
+				$("<a></a>").attr({ title: "ignore all words", href: "#"})
+				.mousedown(function(){self.ignoreAll();}).text("Ignore all");
+			this.elements.$ignoreWordsForever = 
+				$("<a></a>").attr({title: "ignore word forever (add to dictionary)", href: "#"})
+				.mousedown(function(){self.addToDictionary;}).text("Ignore forever");
+			this.elements.$suggestFoot = 
+				$("<div></div>").attr({id: "suggestfoot", class: "foot"})
+				.append(this.elements.$ignoreWord)
+				.append(this.elements.$ignoreAllWords)
+				.append(this.elements.$ignoreWordsForever);
+			this.elements.$suggestBox = 
+				$("<div></div>").attr({id: "suggestbox", class: "suggestDrop"})
+				.append(this.elements.$suggestWords)
+				.append(this.elements.$suggestFoot)
+				.prependTo("body");
+		},
+
+		check : function(){
+
+			var self = this, node = this.domObj.nodeName, text, html;
+
+			text = $.trim(((node != "TEXTAREA" && node != "INPUT") ? 
+				$(this.domObj).text() : 
+				$(this.domObj).val()).replace(/^\W|[\W]+\W|\W$|\n|\t|\s{2,}/g, " "));
+
+			html = (node != "TEXTAREA" && node != "INPUT") ? 
+				$(this.domObj).html() : 
+				$(this.domObj).val().replace(/\n/g, "<br />");
+
+			if (node == "TEXTAREA") {
+				//checkText(this.nodeName.toLowerCase(), $(this));		
+			} else {
+				this.checkText(text, function(json){
+					var replace = "";
 					// highlight bad words
-					$text = "";
 					for(var badword in json) {
-						var replaceWord = Spelling.engine=='pspell' ? json[badword] : text.substr(json[badword][0], json[badword][1]);
+						var replaceWord = self.options.engine == 'pspell' ? json[badword] : text.substr(json[badword][0], json[badword][1]);
 						// we only want unique word replacements
-						if (!new RegExp(replaceWord, "i").test($text)) {
-							$text += replaceWord+" ";
+						if (!new RegExp(replaceWord, "i").test(replace)) {
+							replace += replaceWord;
 							html = html.replace(
-								new RegExp("\\b("+replaceWord+")\\b", "ig"), 
-								'<span onclick=\"Spelling.suggest(this);\" class=\"badspelling\">$1</span>'
+								new RegExp("\\b("+replaceWord+")\\b", "ig"),
+								'<span class=\"spellcheck-badspelling\">$1</span>'
 							);
 						}
 					}							
-				}
-				Spelling.$container.html(html);	
-				// execute callback function, if any
-				(callback != undefined) && callback(); 
+					$(self.domObj).html(html);
+					$(".spellcheck-badspelling", self.domObj).click(function(){
+						self.suggest(this);
+					});
+					$(document).bind("click", function(e){
+						if (!$(e.target).hasClass(".spellcheck-badspelling") && !$(e.target).parents().filter(".suggestDrop").length) {
+							self.hideBox();
+						}
+					});
+				});
 			}
-		});
-	},
-	
-	// build & show word suggestion box 
-	suggest : function(wordobj) {
-		Spelling.$suggestFoot.hide();	
-		Spelling.$curWord = $(wordobj);
-		
-		Spelling.$suggestWords.empty().append('<em>Loading..</em>');
-		var offset = Spelling.$curWord.offset();
+		},
 
-		// show the loading message
-		Spelling.$suggestBox
-		.css({
-			width : Spelling.$suggestBox.outerWidth() < Spelling.$curWord.outerWidth() ? Spelling.$curWord.innerWidth()+"px" : "auto",
-			left : offset.left+"px",
-			top : (offset.top + Spelling.$curWord.outerHeight()) + "px"
-		}).fadeIn(200);		
+		suggest : function(domObj){
 
-		Spelling.suggestShow = true;		
-		setTimeout(function(){
-			$("body").bind("click", function(){
-				Spelling.hideBox(this);
-			});
-		}, 1);
-		setTimeout(function(){
-			Spelling.suggestShow = false;
-		}, 2);		
+			var self = this, $domObj = $(domObj), offset = $domObj.offset();
+			this.$curWord = $(domObj);
 		
-		$.ajax({
-			type : "POST",
-			url : Spelling._url,
-			data : "suggest="+wordobj.innerHTML,
-			dataType : "json",
-			error : function(XHR, status, error) {
-				alert("There was an error processing the request.\n\n"+XHR.responseText);
-			},
-			success : function(json){			
+			this.elements.$suggestFoot.hide();	
+			this.elements.$suggestWords.html('<em>Loading..</em>');
+			this.elements.$suggestBox
+			.css({
+				width : this.elements.$suggestBox.outerWidth() < $domObj.outerWidth() ? $domObj.innerWidth()+"px" : "auto",
+				left : offset.left+"px",
+				top : (offset.top + $domObj.outerHeight()) + "px"
+			}).fadeIn(200);		
+
+			this.getWordSuggestions($.trim($domObj.text()), function(json){
 				// build suggest word list
-				Spelling.$suggestWords.empty();
+				self.elements.$suggestWords.empty();
 				for(var i=0;i<(json.length<5?json.length:5);i++) {
-					Spelling.$suggestWords.append('<a href="javascript:;" '+(!i?'class="first" ':'')+'onmousedown="Spelling.replace(this)">'+json[i]+'</a>');
+					var $replaceWord = $("<a></a>").attr({href: "#",class: (!i?'first':'')}).mousedown(function(){self.replace(domObj, this);}).text(json[i]);
+					self.elements.$suggestWords.append($replaceWord);
 				}								
 				// no suggestions
-				!i && Spelling.$suggestWords.append('<em>(no suggestions)</em>');
+				(!i) && self.elements.$suggestWords.append('<em>(no suggestions)</em>');
 							
-				// show the suggested words
-				Spelling.$suggestFoot.show();
-				Spelling.$suggestBox
+				// show the suggest box
+				self.elements.$suggestFoot.show();
+				self.elements.$suggestBox
 				.css({
-					width : Spelling.$suggestBox.outerWidth() < Spelling.$curWord.outerWidth() ? Spelling.$curWord.innerWidth()+"px" : "auto",
-					left : Spelling.$suggestBox.outerWidth()+offset.left > $("body").width() ? (offset.left-Spelling.$suggestBox.width())+Spelling.$curWord.outerWidth()+"px" : offset.left+"px"
+					width : self.elements.$suggestBox.outerWidth() < $domObj.outerWidth() ? $domObj.innerWidth()+"px" : "auto",
+					left : self.elements.$suggestBox.outerWidth() + offset.left > $("body").width() ? 
+						(offset.left - self.elements.$suggestBox.width()) + $domObj.outerWidth()+"px":offset.left+"px"
 				});				
-			}
-		});
-	},
-	
-	// ignore this word
-	ignore : function() {
-		Spelling.$curWord.after(Spelling.$curWord.html()).remove();
-	},
-	
-	// ignore all words in this chunk of text
-	ignoreAll : function() {
-		$("span.badspelling", Spelling.$container).each(function(){
-			(new RegExp(Spelling.$curWord.html(), "i").test(this.innerHTML)) && $(this).after(this.innerHTML).remove(); // remove anchor
-		});
-	},
-	
-	// add word to personal dictionary (pspell only)
-	addToDictionary : function() {
-		confirm("Are you sure you want to add \""+Spelling.$curWord.html()+"\" to the dictionary?") &&
-		$.ajax({
-			type : "POST",
-			url : Spelling._url,
-			data : 'addtodictionary='+Spelling.$curWord.html(),
-			dataType : "json",
-			error : function(XHR, status, error) {
-				alert("There was an error processing the request.\n\n"+XHR.responseText);
-			},
-			success: Spelling.check
-		});			
-	},
-	
-	// replace incorrectly spelt word with suggestion
-	replace : function(replace) {
-		Spelling.hideBox();
-		Spelling.$curWord.after(replace.innerHTML).remove();
-	},
-	
-	// remove spell check formatting
-	remove : function() {
-		$("span.badspelling", Spelling.$container).each(function(){
-			$(this).after(this.innerHTML).remove()
-		});
-	},
 
-	// hides the suggest box	
-	hideBox : function(box) {
-		box != undefined && $(box).unbind();
-		!Spelling.suggestShow && Spelling.$suggestBox.fadeOut(250);				
-	}
+			});
+		},
 
-};
+		checkText : function(text, callback){
+			var self = this,
+			xhr = $.ajax({
+				type : "POST",
+				url : this.options.url,
+				data : 'text='+text,
+				dataType : "json",
+				error : function(XHR, status, error) {
+					alert("Sorry, there was an error processing the request.");
+				},
+				success : function(json){
+					if (!json.length) {
+						$(".loading").hide();
+						alert('There are no incorrectly spelt words :)');
+					} else {
+						(callback) && callback(json);
+					}
+				}
+			});
+			return xhr;
+		},
+
+		getWordSuggestions : function(text, callback) {
+			var self = this,
+			xhr = $.ajax({
+				type : "POST",
+				url : this.options.url,
+				data : "suggest="+text,
+				dataType : "json",
+				error : function(XHR, status, error) {
+					alert("Sorry, there was an error processing the request.");
+				},
+				success : function(json){			
+					(callback) && callback(json);
+				}
+			});
+			return xhr;
+		},
+		
+		// hides the suggest box	
+		hideBox : function(callback) {
+			this.elements.$suggestBox.fadeOut(250, function(){
+				(callback != undefined) && callback();
+			});				
+		},
+	
+		// replace incorrectly spelt word with suggestion
+		replace : function(domObj, replace) {
+			this.hideBox();
+			$(domObj).after(replace.innerHTML).remove();
+		},
+		
+		// build & show word suggestion box 
+		ignore : function() {
+			this.$curWord.after(this.$curWord.html()).remove();
+			this.hideBox();
+		},
+		
+		// ignore all words in this chunk of text
+		ignoreAll : function() {
+			var self = this;
+			$("span.spellcheck-badspelling", self.domObj).each(function(){
+				(new RegExp(self.$curWord.html(), "i").test(this.innerHTML)) && $(this).after(this.innerHTML).remove(); // remove anchor
+			});
+			this.hideBox();
+		},
+		
+		// add word to personal dictionary (pspell only)
+		addToDictionary : function() {
+			var self= this;
+			this.hideBox(function(){
+				confirm("Are you sure you want to add the word \""+this.$curWord.html()+"\" to the dictionary?") &&
+				$.ajax({
+					type : "POST",
+					url : self.options.url,
+					data : 'addtodictionary='+self.$curWord.html(),
+					dataType : "json",
+					error : function(XHR, status, error) {
+						alert("Sorry, there was an error processing the request.");
+					},
+					success: self.check
+				});			
+			});
+		},
+		
+		// remove spell check formatting
+		removeFormatting : function() {
+			$("span.spellcheck-badspelling", this.domObj).each(function(){
+				$(this).after(this.innerHTML).remove()
+			});
+		},
+
+		// removes all
+		remove : function(speed) {
+			(!speed) && (speed = 100);
+			$("#speller-overlay").fadeOut(speed, function(){
+				var $which = $(this);
+				if ($which.length) {
+					$which_text = $which
+					.html()
+					.replace(/<br\s?\/?>/g, "\n")
+					.replace(/<[^>]+\/?>/g, "");
+					if (Spelling.$container.length && Spelling.$container[0].nodeName.toLowerCase() == "form") {
+						$("textarea", Spelling.$container).each(function(){
+							$(this).val($which_text).fadeIn();
+						});
+					}
+					$(this).remove();
+				}
+			});
+		}
+	};	
+
+})(jQuery);

@@ -36,7 +36,7 @@ class Spelling {
 		
 		// return suggestions
 		if (isset($suggest)) {
-			die(json_encode(pspell_suggest($pspell_link, $suggest)));	
+			exit(json_encode(pspell_suggest($pspell_link, $suggest)));	
 		} 
 		// return badly spelt words
 		elseif (isset($text)) {
@@ -46,7 +46,7 @@ class Spelling {
 					$words[] = utf8_encode(html_entity_decode($word));
 				}
 			}
-			die(json_encode($words));
+			exit(json_encode($words));
 		}
 		// add word to personal dictionary
 		elseif (isset($addtodictionary)) {
@@ -55,7 +55,7 @@ class Spelling {
 			$pspell_link = pspell_new_config($pspell_config);
 			@pspell_add_to_personal($pspell_link, strtolower($addtodictionary)) or die('You can\'t add a word to the dictionary that contains any punctuation.');
 			pspell_save_wordlist($pspell_link);
-			die(array());
+			exit(array());
 		}	
 		
 	}
@@ -145,7 +145,6 @@ class Spelling {
 	
 	private static function sendHeaders() {
 		header('Content-type: text/json');				// data type
-		header('Content-Encoding: UTF-8');				// encoding
 		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");		// no cache
 		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");	// no cache
 		header("Cache-Control: no-store, no-cache, must-revalidate");	// no cache
