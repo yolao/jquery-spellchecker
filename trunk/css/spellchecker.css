@@ -1,11 +1,8 @@
 /*
- *
- * spellchecker.css
- * (c) Richard Willis
- *
+ * Filename: spellchecker.css
+ * Developer: Richard Willis
  */
 
-/* Spell checker styling */
 span.spellcheck-badspelling {
 	color:#d70303;
 	text-decoration:none;
@@ -63,28 +60,6 @@ span.spellcheck-badspelling {
 #spellcheck-badwords .spellcheck-badspelling {
 
 }
-#content {
-	background:url(../img/form_bg.gif) repeat-x 0 0;
-	border:1px solid #888;
-	border-right:1px solid #ccc;
-	border-bottom:1px solid #ccc;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	padding:0em 0.9em;
-	font-size:0.8em;
-	margin-bottom:10px;
-}
-#text-content {
-	background:url(../img/form_bg.gif) repeat-x 0 0;
-	border:1px solid #888;
-	border-right:1px solid #ccc;
-	border-bottom:1px solid #ccc;
-	/*-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;*/
-	padding:1px;
-	font-size:0.8em;
-	margin-bottom:10px;
-}
 .speller-textarea-overlay {
 	z-index:9999;
 	background:#FFF;
@@ -96,30 +71,6 @@ span.spellcheck-badspelling {
 	padding:1px;
 	letter-spacing::0.2;
 	display:none;
-}
-#contact-form textarea#message {
-	font-size:13px;
-	margin-bottom:10px;
-	line-height:1;
-	border:1px solid #999999;
-}
-a.speller-icon {
-	display:block;
-	width:13px;
-	height:14px;
-	padding:2px;
-	border:1px solid #fff;
-	background:transparent url(../img/icon_spellchecker.gif) no-repeat center center;
-	text-decoration:none;
-}
-a.speller-icon:hover {
-	border:1px solid #eee;
-}
-a.speller-icon-selected {
-	border-top:1px solid #ccc;
-	border-left:1px solid #ccc;
-	border-right:1px solid #ccc;
-	border-bottom:1px solid #ccc;
 }
 .spellcheck-sep {
 	padding-right: 0.5em;
