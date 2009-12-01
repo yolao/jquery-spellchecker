@@ -16,7 +16,7 @@ h2 {color: #800; padding-left:0; font-size: large; font-weight: normal; }
 h2 a, h2 a:visited {color:#800;text-decoration:none}
 h2 a:hover {color:red}
 table {border-collapse: collapse; }
-form {background: #fefefe url(../img/form_bg.gif) repeat-x 0 0; padding:0px;border: 1px solid #ddd;width:88%}
+form {background: #fefefe url(../img/form_bg.gif) repeat-x 0 0; padding:0px;border: 1px solid #ddd;}
 fieldset {border:0;margin:15px;}
 label {display:block;margin-top:2px;}
 label:hover {}
@@ -63,7 +63,11 @@ code { padding: 0; font-size: 108%; font-style: normal; }
 code.method { font-size: 150%; display: block; margin-top: 20px }
 code.inline { background-color: #ffc }
 
+/* Form styling */
+fieldset.info {border:1px solid #ddd;margin:0em 0em 1.2em 0em;font-size:80%}
+fieldset.info legend {padding:2px;background:#fff;font-weight:bold}
 /* Common */
+.right {float:right}
 .hidden {display:none;}
 .strike {text-decoration:line-through;}
 .loading {background:url(../img/ajax-loader.gif) no-repeat center center;padding:0.5em 8px}

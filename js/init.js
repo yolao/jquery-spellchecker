@@ -28,7 +28,11 @@ $(function(){
 	}
 	
 	// initiate the tabs
-        $("#main, #tabs").tabs();
+	$("#main, #tabs").tabs();
+	$("#tabs a").click(function(){
+		(/textarea\-example/.test(this.href)) && $("#text-content").focus();
+		$("#content").spellcheck("remove");
+	});
 
 	// accordian links toggle
 	$("a.accordian").each(function(){
@@ -37,26 +41,51 @@ $(function(){
 			$("#"+this.href.replace(/[^#]+#/, '')).animate({height:"toggle",opacity:"toggle"}, 560, "jswing");
 		});
 	});
-
-	
-	// initiate the spell checker
-	Spelling.init("content");
 			
 	// check the spelling
-	$("#check").click(function(e){
+	$("#check-html").click(function(e){
 		e.preventDefault();
 		if ($(this).html().match(/^remove/i)) {
-			Spelling.remove();
+			$("#content").spellcheck("remove");
 			$(".center", this).html("Check Spelling");
 		} else {
 			$(".loading").show();
 			var button = this;
-			Spelling.check(function(){
+			$("#content").spellcheck();
+			$("#content").spellcheck("check");
+			//.check($("#content"), function(){
 				$(".center", button).html("Remove Spelling");			
 				$(".loading").hide();
-			});					
+			//});					
 		}
-	});			
+	});	
+	// check the spelling on a textarea
+	$("#check-textarea").click(function(e){
+		e.preventDefault();
+		$(".loading").show();
+		Spelling.check($("#text-content"), function(){
+			$(".loading").hide()
+		});
+	});	
+	// check the spelling on a form
+	$("#check-form-spelling").click(function(e){
+		e.preventDefault();
+		this.blur();
+		var $this = $(this);
+		if ($this.hasClass("speller-icon-selected")) {
+			$this.removeClass("speller-icon-selected");
+			Spelling.remove();
+		} else {
+			$(this).addClass("speller-icon-selected");
+			// pass in form id
+			Spelling.check($("#contact-form"), function(){
+				$(".loading").hide();
+			});
+		}
+	});	
+	$("#contact-form").submit(function(e){
+		alert('hello');
+	});	
 			
 	// remove the spell checker formatting
 	$("#remove").click(function(){

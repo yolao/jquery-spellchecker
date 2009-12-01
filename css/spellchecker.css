@@ -6,11 +6,11 @@
  */
 
 /* Spell checker styling */
-span.badspelling {
+span.spellcheck-badspelling {
 	color:#d70303;
 	text-decoration:none;
 	background:url(../img/spellchecker/bg.gif) repeat-x 100% 100%;
-	cursor:pointer
+	cursor:pointer;
 }
 .suggestDrop {
 	position:absolute;
@@ -32,28 +32,28 @@ span.badspelling {
 	border-top:1px solid #ccc;
 	border-left:1px solid #ccc;
 }
-.suggestDrop a, suggestDrop a:visited {
+.suggestDrop a, .suggestDrop a:visited {
 	border-left:1px solid #bbb;
 	border-right:1px solid #bbb;
 	padding:3px 6px 3px 6px;
 	display:block;margin:0px;
 	text-decoration:none;
 	color:#333;
-	outline:none
+	outline:none;
 }
-.suggestDrop a.first, suggestDrop a.first:visited {
+.suggestDrop a.first, .suggestDrop a.first:visited {
 	border-top:1px solid #ccc
 }
 .suggestDrop a:hover {
 	color:#000;
-	background:#ddd
+	background:#ddd;
 }
 .suggestDrop .foot {
 	border-top:1px solid #ddd;
-	background:#fff
+	background:#fff;
 }
-.suggestDrop .foot a, suggestDrop .foot a:visited {
-	outline:none
+.suggestDrop .foot a, .suggestDrop .foot a:visited {
+	outline:none;
 } 
 #content {
 	background:url(../img/form_bg.gif) repeat-x 0 0;
@@ -62,8 +62,54 @@ span.badspelling {
 	border-bottom:1px solid #ccc;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
-	padding:0em 1em;
-	font-size:86%;
+	padding:0em 0.9em;
+	font-size:0.8em;
 	margin-bottom:10px;
 }
-
+#text-content {
+	background:url(../img/form_bg.gif) repeat-x 0 0;
+	border:1px solid #888;
+	border-right:1px solid #ccc;
+	border-bottom:1px solid #ccc;
+	/*-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;*/
+	padding:1px;
+	font-size:0.8em;
+	margin-bottom:10px;
+}
+.speller-textarea-overlay {
+	z-index:9999;
+	background:#FFF;
+	font-size:13px;
+	overflow:auto;
+	line-height:1;
+	border:1px solid #999999;
+	margin-bottom:10px;
+	padding:1px;
+	letter-spacing::0.2;
+	display:none;
+}
+#contact-form textarea#message {
+	font-size:13px;
+	margin-bottom:10px;
+	line-height:1;
+	border:1px solid #999999;
+}
+a.speller-icon {
+	display:block;
+	width:13px;
+	height:14px;
+	padding:2px;
+	border:1px solid #fff;
+	background:transparent url(../img/icon_spellchecker.gif) no-repeat center center;
+	text-decoration:none;
+}
+a.speller-icon:hover {
+	border:1px solid #eee;
+}
+a.speller-icon-selected {
+	border-top:1px solid #ccc;
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
+	border-bottom:1px solid #ccc;
+}
