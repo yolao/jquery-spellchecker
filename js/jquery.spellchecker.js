@@ -12,14 +12,15 @@
 
 	$.fn.extend({
 		
-		spellcheck : function(options){
+		spellcheck : function(options, callback){
 
 			return this.each(function(){
 
 				if ($(this).data('spellchecker') && $(this).data("spellchecker")[options]){
-					$(this).data("spellchecker")[options]();
+					$(this).data("spellchecker")[options](callback);
 				} else {
-					$(this).data('spellchecker', new SpellChecker(this, options));
+					$(this).data('spellchecker', new SpellChecker(this, options.constructor === Object && options || null));
+					(options.constructor == String) && $(this).data("spellchecker")[options](callback);
 				}
 			});
 
@@ -68,7 +69,7 @@
 				.prependTo("body");
 		},
 
-		check : function(){
+		check : function(callback){
 
 			var self = this, node = this.domObj.nodeName, text, html;
 
@@ -81,8 +82,27 @@
 				$(this.domObj).val().replace(/\n/g, "<br />");
 
 			if (node == "TEXTAREA") {
-				//checkText(this.nodeName.toLowerCase(), $(this));		
+				this.type = 'textarea';
+				this.checkText(text, function(json){
+					if (!self.elements.$badwords) {
+						self.elements.$badwords = $("<div></div>").attr("id", "spellcheck-badwords");
+						$(self.domObj).after(self.elements.$badwords);
+					} else {
+						self.elements.$badwords.html("");
+					}
+					for(var badword in json) {
+						$("<span></span>")
+						.addClass("spellcheck-badspelling")
+						.text(self.options.engine == 'pspell' ? json[badword] : text.substr(json[badword][0], json[badword][1]))
+						.appendTo(self.elements.$badwords);
+					}
+					$(".spellcheck-badspelling", self.elements.$badwords).click(function(){
+						self.suggest(this);
+					}).after(", ");
+					(callback) && callback();
+				});
 			} else {
+				this.type = 'html';
 				this.checkText(text, function(json){
 					var replace = "";
 					// highlight bad words
@@ -101,13 +121,14 @@
 					$(".spellcheck-badspelling", self.domObj).click(function(){
 						self.suggest(this);
 					});
-					$(document).bind("click", function(e){
-						if (!$(e.target).hasClass(".spellcheck-badspelling") && !$(e.target).parents().filter(".suggestDrop").length) {
-							self.hideBox();
-						}
-					});
+					(callback) && callback();
 				});
 			}
+			$(document).bind("click", function(e){
+				if (!$(e.target).hasClass(".spellcheck-badspelling") && !$(e.target).parents().filter(".suggestDrop").length) {
+					self.hideBox();
+				}
+			});
 		},
 
 		suggest : function(domObj){
