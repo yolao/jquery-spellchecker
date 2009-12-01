@@ -62,9 +62,9 @@ $(function(){
 	// check the spelling on a textarea
 	$("#check-textarea").click(function(e){
 		e.preventDefault();
-		$(".loading").show();
-		Spelling.check($("#text-content"), function(){
-			$(".loading").hide()
+		//$(".loading").show();
+		$("#text-content").spellcheck("check", function(){
+			$(".loading").hide();
 		});
 	});	
 	// check the spelling on a form
