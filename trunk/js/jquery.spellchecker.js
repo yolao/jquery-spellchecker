@@ -27,12 +27,13 @@
 	});
 
 	var SpellChecker = function(domObj, options) {
-		this.domObj = domObj;
 		this.options = $.extend({
 			rpc: "checkspelling.php",
-			engine: "google" // pspell or google
+			lang: "de", 
+			engine: "pspell" // pspell or google
 		}, options || {});
 		this.options.url = this.options.rpc+"?engine="+this.options.engine;
+		this.domObj = domObj;
 		this.elements = {};
 		this.init();
 	};
@@ -59,7 +60,7 @@
 			if (node == "TEXTAREA" || node == "INPUT") {
 				this.type = 'textarea';
 				var text = $.trim($(this.domObj).val().replace(new RegExp(puncExp, "g"), " ")); // strip punctuation
-				this.getJsonData(this.options.url, {text:text}, function(json){
+				this.getJsonData(this.options.url, {text: text, lang: this.options.lang}, function(json){
 					if (json.result) {
 						callback(1);
 						return;
@@ -86,7 +87,7 @@
 			} else {
 				this.type = 'html';
 				var text = $.trim($(this.domObj).text().replace(new RegExp(puncExp, "g"), " ")); // strip punctuation
-				this.getJsonData(this.options.url, {text:text}, function(json){
+				this.getJsonData(this.options.url, {text: text, lang: this.options.lang}, function(json){
 					if (json.result) {
 						callback(1);
 						return;
@@ -94,7 +95,7 @@
 					var replace = "", html = $(self.domObj).html();
 					// highlight bad words
 					for(var badword in json) {
-						var replaceWord = self.options.engine == 'pspell' ? json[badword] : text.substr(json[badword][0], json[badword][1]);
+						var replaceWord = json[badword];
 						// we only want unique word replacements
 						if (!new RegExp(replaceWord, "i").test(replace)) {
 							replace += replaceWord;
@@ -128,7 +129,7 @@
 				top : (offset.top + $domObj.outerHeight()) + "px"
 			}).fadeIn(200);		
 
-			this.getJsonData(this.options.url, {suggest:$.trim($domObj.text())}, function(json){
+			this.getJsonData(this.options.url, {suggest: $.trim($domObj.text()), lang: this.options.lang}, function(json){
 				// build suggest word list
 				self.elements.$suggestWords.empty();
 				for(var i=0;i<(json.length<5?json.length:5);i++) {
@@ -256,7 +257,7 @@
 			return xhr;
 		},
 
-		// creates the suggestbox
+		// creates the suggestbox and stores the elements in an array for later use
 		createElements : function(){
 			var self = this;
 			this.elements.$suggestWords = 
