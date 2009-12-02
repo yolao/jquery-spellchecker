@@ -26,8 +26,6 @@
 		}
 	});
 
-	// note, perhaps only 1 instance of the spellchecker would be better??
-
 	var SpellChecker = function(domObj, options) {
 		this.domObj = domObj;
 		this.options = $.extend({
@@ -56,10 +54,12 @@
 		// checks a chunk of text for bad words, then either shows the words below the original element (if texarea) or highlights the bad words
 		check : function(callback){
 
-			var self = this, node = this.domObj.nodeName;
+			var self = this, node = this.domObj.nodeName, puncExp = '/^\W|[\W]+\W|\W$|\n|\t|\s{2,}/';
 		
-			if (node == "TEXTAREA") {
-				this.checkTextarea(function(text, json) {
+			if (node == "TEXTAREA" || node == "INPUT") {
+				this.type = 'textarea';
+				var text = $.trim($(this.domObj).val().replace(new RegExp(puncExp, "g"), " ")); // strip punctuation
+				this.getJsonData(this.options.url, {text:text}, function(json){
 					if (json.result) {
 						callback(1);
 						return;
@@ -83,13 +83,14 @@
 					(callback) && callback();
 				});
 			} else {
-				var html = $(this.domObj).html();
-				this.checkHTML(function(text, json){
+				this.type = 'html';
+				var text = $.trim($(this.domObj).text().replace(new RegExp(puncExp, "g"), " ")); // strip punctuation
+				this.getJsonData(this.options.url, {text:text}, function(json){
 					if (json.result) {
 						callback(1);
 						return;
 					}
-					var replace = "";
+					var replace = "", html = $(self.domObj).html();
 					// highlight bad words
 					for(var badword in json) {
 						var replaceWord = self.options.engine == 'pspell' ? json[badword] : text.substr(json[badword][0], json[badword][1]);
@@ -111,45 +112,6 @@
 			}
 		},
 
-		// grabs, munges and checks textarea text, returns JSON object of bad words
-		checkTextarea : function(callback){
-			this.type = 'textarea';
-			var text = $.trim($(this.domObj).val().replace(/^\W|[\W]+\W|\W$|\n|\t|\s{2,}/g, " ")); // strip punctuation
-			this.checkText(text, function(json){
-				(callback) && callback(text, json);
-			});
-		},
-
-		// grabs, munges and checks HTML text, returns JSON object of bad words
-		checkHTML : function(callback){
-			this.type = 'html';
-			var text = $.trim($(this.domObj).text().replace(/^\W|[\W]+\W|\W$|\n|\t|\s{2,}/g, " ")); // strip punctuation
-			this.checkText(text, function(json) {
-				(callback) && callback(text, json);
-			});
-		},
-
-		// sends post request to check a chunk of text, return JSON object of incorrectly spelt words
-		checkText : function(text, callback){
-			var self = this,
-			xhr = $.ajax({
-				type : "POST",
-				url : this.options.url,
-				data : 'text='+text,
-				dataType : "json",
-				error : function(XHR, status, error) {
-					alert("Sorry, there was an error processing the request.");
-				},
-				success : function(json){
-					if (!json.length) {
-						json.result = 1;	
-					}
-					(callback) && callback(json);
-				}
-			});
-			return xhr;
-		},
-		
 		// gets a list of suggested words, appends to the suggestbox and shows the suggestbox
 		suggest : function(domObj){
 
@@ -165,7 +127,7 @@
 				top : (offset.top + $domObj.outerHeight()) + "px"
 			}).fadeIn(200);		
 
-			this.getWordSuggestions($.trim($domObj.text()), function(json){
+			this.getJsonData(this.options.url, {suggest:$.trim($domObj.text())}, function(json){
 				// build suggest word list
 				self.elements.$suggestWords.empty();
 				for(var i=0;i<(json.length<5?json.length:5);i++) {
@@ -193,25 +155,6 @@
 			});
 		},
 
-
-		// sends post request to get single word suggestions, return JSON object of suggested words
-		getWordSuggestions : function(text, callback) {
-			var self = this,
-			xhr = $.ajax({
-				type : "POST",
-				url : this.options.url,
-				data : "suggest="+text,
-				dataType : "json",
-				error : function(XHR, status, error) {
-					alert("Sorry, there was an error processing the request.");
-				},
-				success : function(json){			
-					(callback) && callback(json);
-				}
-			});
-			return xhr;
-		},
-		
 		// hides the suggest box	
 		hideBox : function(callback) {
 			this.elements.$suggestBox.fadeOut(250, function(){
@@ -330,8 +273,27 @@
 				.append(this.elements.$suggestWords)
 				.append(this.elements.$suggestFoot)
 				.prependTo("body");
+		},
+		
+		// sends post request, return JSON object
+		getJsonData : function(url, data, callback){
+			var xhr = $.ajax({
+				type : "POST",
+				url : url,
+				data : data,
+				dataType : "json",
+				error : function(XHR, status, error) {
+					alert("Sorry, there was an error processing the request.");
+				},
+				success : function(json){
+					if (!json.length) {
+						json.result = 1;	
+					}
+					(callback) && callback(json);
+				}
+			});
+			return xhr;
 		}
-
 	};	
 
 })(jQuery);
