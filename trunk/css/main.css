@@ -70,13 +70,14 @@ label {
 	margin-top: 2px;
 	margin-bottom: 2px;
 }
+input, select, textarea { 
+	font-size: 0.8em;
+}
 textarea {
 	border: 1px solid #999;
 	width: 100%;
-	height: 15em;
-}
-textarea {
-	font-family:inherit;
+	height: 21em;
+	font-family: inherit;
 }
 td, th {
 	vertical-align: middle;
@@ -231,9 +232,26 @@ pre {
 	border: 1px solid #888;
 	border-right: 1px solid #ccc;
 	border-bottom: 1px solid #ccc;
-	padding: 1px;
-	font-size: 0.8em;
+	padding: 2px;
 	margin-bottom: 10px;
+	font-size: 0.8em;
+}
+.ui-selectmenu-service {
+	font-size: 0.8em;
+	float: left;
+}
+.ui-selectmenu-language {
+	float: left;
+	margin-right: 0.5em;
+}
+.ui-widget-content {
+	font-size: 1em;
+}
+.ui-widget a.ui-selectmenu, .ui-selectmenu-menu-dropdown {
+	font-size: 0.7em;
+}
+.ui-selectmenu-menu-dropdown {
+	font-size: 0.8em;
 }
 
 #tabs {
@@ -272,9 +290,6 @@ a.ui-button:hover {
 	float: left;
 	padding: 0.7em 0 0.7em 22px;
 	background-position: 0 center;
-}
-.ui-widget-content {
-	font-size: 1em;
 }
 
 /* columns */

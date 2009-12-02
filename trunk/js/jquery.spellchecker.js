@@ -12,7 +12,7 @@
 
 	$.fn.extend({
 		
-		spellcheck : function(options, callback){
+		spellchecker : function(options, callback){
 
 			return this.each(function(){
 				if ($(this).data('spellchecker') && $(this).data("spellchecker")[options]){
@@ -66,15 +66,20 @@
 						return;
 					}
 					if (!self.elements.$badwords) {
-						self.elements.$badwords = $("<div></div>").attr("id", "spellcheck-badwords");
-						$(self.domObj).after(self.elements.$badwords);
+						// we only want one instance of this block in the dom
+						if (!$("#spellcheck-badwords").length) {
+							self.elements.$badwords = $("<div></div>").attr("id", "spellcheck-badwords");
+							$(self.domObj).after(self.elements.$badwords);
+						} else {
+							self.elements.$badwords = $("#spellcheck-badwords").empty();
+						}
 					} else {
 						self.elements.$badwords.html("");
 					}
 					for(var badword in json) {
 						$("<span></span>")
 						.addClass("spellcheck-word-highlight")
-						.text(self.options.engine == 'pspell' ? json[badword] : text.substr(json[badword][0], json[badword][1]))
+						.text(json[badword])
 						.appendTo(self.elements.$badwords);
 					}
 					$(".spellcheck-word-highlight", self.elements.$badwords).click(function(){
@@ -244,6 +249,7 @@
 				url : url,
 				data : data,
 				dataType : "json",
+				cache : false,
 				error : function(XHR, status, error) {
 					alert("Sorry, there was an error processing the request.");
 				},
