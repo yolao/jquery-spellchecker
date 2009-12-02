@@ -16,7 +16,8 @@ $Spelling = new Spelling($_GET['engine']);
 class Spelling {
 
 	// site specific personal dictionary
-	protected $pspell_personal_dictionary = '/srv/projects/jquery.ui.localdomain/dictionary/custom.pws';
+	protected $pspell_personal_dictionary = '/srv/projects/jquery-spellchecker.localdomain/dictionary/custom.pws';
+
 	// pspell language
 	protected $pspell_lang = 'en';
 
@@ -30,7 +31,7 @@ class Spelling {
 		foreach($_REQUEST as $key => $value) {
 			$$key = stripslashes(trim($value));
 		}
-		
+
 		// load the dictionary
 		$pspell_link = @pspell_new_personal($this->pspell_personal_dictionary, $this->pspell_lang) or die('PSpell error');
 		

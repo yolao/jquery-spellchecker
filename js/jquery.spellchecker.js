@@ -54,7 +54,7 @@
 		// checks a chunk of text for bad words, then either shows the words below the original element (if texarea) or highlights the bad words
 		check : function(callback){
 
-			var self = this, node = this.domObj.nodeName, puncExp = '/^\W|[\W]+\W|\W$|\n|\t|\s{2,}/';
+			var self = this, node = this.domObj.nodeName, puncExp = '^\\W|[\\W]+\\W|\\W$|\\n|\\t|\\s{2,}';
 		
 			if (node == "TEXTAREA" || node == "INPUT") {
 				this.type = 'textarea';
@@ -212,7 +212,7 @@
 		addToDictionary : function() {
 			var self= this;
 			this.hideBox(function(){
-				confirm("Are you sure you want to add the word \""+this.$curWord.html()+"\" to the dictionary?") &&
+				confirm("Are you sure you want to add the word \""+self.$curWord.text()+"\" to the dictionary?") &&
 				$.ajax({
 					type : "POST",
 					url : self.options.url,
@@ -221,7 +221,10 @@
 					error : function(XHR, status, error) {
 						alert("Sorry, there was an error processing the request.");
 					},
-					success: self.check
+					success: function(){
+						self.ignoreAll();
+						self.check();
+					}
 				});			
 			});
 		},
@@ -288,7 +291,7 @@
 				.addClass("spellcheck-suggestbox-foot")
 				.append(this.elements.$ignoreWord)
 				.append(this.elements.$ignoreAllWords)
-				.append(this.options.engine == "pspel" ? this.elements.$ignoreWordsForever : false);
+				.append(this.options.engine == "pspell" ? this.elements.$ignoreWordsForever : false);
 			this.elements.$suggestBox = 
 				$("<div></div>")
 				.addClass("spellcheck-suggestbox")
