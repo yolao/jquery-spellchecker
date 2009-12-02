@@ -1,15 +1,11 @@
-/*
- * Filename: spellchecker.css
- * Developer: Richard Willis
- */
-
-span.spellcheck-badspelling {
-	color:#d70303;
-	text-decoration:none;
-	background:url(../img/spellchecker/bg.gif) repeat-x 100% 100%;
-	cursor:pointer;
+.spellcheck-word-highlight {
+	color: #d70303;
+	text-decoration: none;
+	background: url(../img/spellchecker/bg.gif) repeat-x 100% 100%;
+	cursor: pointer;
 }
-.suggestDrop {
+
+.spellcheck-suggestbox {
 	position:absolute;
 	display:none;
 	z-index:9999;
@@ -22,14 +18,14 @@ span.spellcheck-badspelling {
 #suggestwords {
 	background:#fff;
 }
-.suggestDrop em {
+.spellcheck-suggestbox em {
 	text-align:center;
 	padding:3px 6px 3px 6px;
 	display:block;
 	border-top:1px solid #ccc;
 	border-left:1px solid #ccc;
 }
-.suggestDrop a, .suggestDrop a:visited {
+.spellcheck-suggestbox a, .spellcheck-suggestbox a:visited {
 	border-left:1px solid #bbb;
 	border-right:1px solid #bbb;
 	padding:3px 6px 3px 6px;
@@ -38,39 +34,24 @@ span.spellcheck-badspelling {
 	color:#333;
 	outline:none;
 }
-.suggestDrop a.first, .suggestDrop a.first:visited {
+.spellcheck-suggestbox a.first, .spellcheck-suggestbox a.first:visited {
 	border-top:1px solid #ccc
 }
-.suggestDrop a:hover {
+.spellcheck-suggestbox a:hover {
 	color:#000;
 	background:#ddd;
 }
-.suggestDrop .foot {
+.spellcheck-suggestbox-foot {
 	border-top:1px solid #ddd;
 	background:#fff;
 }
-.suggestDrop .foot a, .suggestDrop .foot a:visited {
+.spellcheck-suggestbox-foot a, .spellcheck-suggestbox-foot a:visited {
 	outline:none;
 } 
 #spellcheck-badwords {
 	margin-bottom: 2em;
 	margin-top: -0.5em;
 	font-size: 12px;
-}
-#spellcheck-badwords .spellcheck-badspelling {
-
-}
-.speller-textarea-overlay {
-	z-index:9999;
-	background:#FFF;
-	font-size:13px;
-	overflow:auto;
-	line-height:1;
-	border:1px solid #999999;
-	margin-bottom:10px;
-	padding:1px;
-	letter-spacing::0.2;
-	display:none;
 }
 .spellcheck-sep {
 	padding-right: 0.5em;
