@@ -1,0 +1,105 @@
+The plugin has 2 default behaviours:
+ * If bound to a HTML element that is not a textarea, the plugin will highlight the incorrectly spelt words. Clicking on the words will bring up the suggest box.
+ * If bound to a textarea element, the plugin will add the incorrectly spelt words after the textarea. Clicking on the words will bring up the suggest box.
+ * View the [http://spellchecker.jquery.badsyntax.co.uk/ demo] to get a better idea of the default behaviour. 
+
+*Server script*
+
+The plugin comes with an example PHP script that supports two type of spell checking engines: php's pspell extension for aspell, or google's spell checking services. If you are able to use pspell, you will have greater control over your dictionary (with the ability to manage your dictionary words). 
+- using pspell requires you to have aspell installed on the server
+- using google requires minimal server adjustments, should work on most default PHP installations
+
+If you would like to use a different server side language, then here outlines the expected server responses:
+
+_Check chunk of text:_
+
+checkspelling.php?engine=pspell
+  * Request: 
+   * Content type: application/x-www-form-urlencoded;charset=UTF-8
+   * Data: text="a chunk of text without any punctuation"
+  * Response:
+   * Content type: application/json
+   * Example response: ["bbad","speltt","wwords"]
+
+_Get suggestions for a word:_
+
+checkspelling.php?engine=pspell
+  * Request: 
+   * Content type: application/x-www-form-urlencoded;charset=UTF-8
+   * Data: suggest="word"
+  * Response:
+   * Content type: application/json
+   * Example response: ["suggest","snuggest","soggiest"]
+
+----
+
+*Supported languages*
+
+_Pspell_
+
+Pspell is simply a php wrapper to the excellent GNU aspell spell checker. So supporting large range of languages is as easy as installing the relevant aspell language dictionary. These dictionary packs are (i'm guessing here) available in most GNU/Linux distro repositories. In debian/ubuntu, you can install a new dictionary like so:
+{{{
+sudo apt-get install aspell-LANG
+}}}
+(replace LANG with the language code)
+
+If you want to search for a particular language dictionary, you can use apt-cache:
+{{{
+sudo apt-cache search aspell
+}}}
+or view the aspell [http://aspell.net/man-html/Supported.html supported languages] page.
+
+  * remember to restart apache after you have installed new dictionaries
+  * if you having problems getting pspell to work with personal dictionaries, view the php errors!
+
+_Google_
+
+I couldn't find any information as to the languages google supports, but it's probably a lot.
+
+----
+
+
+
+*Usage*
+
+Include the following in the head section of your html document:
+{{{
+<link rel="stylesheet" type="text/css" media="screen" href="css/spellchecker.css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/jquery.spellchecker.js"></script>
+}}}
+
+The plugin can be used on most elements, although there is different behavior between form inputs (textareas, etc) and other elements.
+
+<strong>Default usage</strong>:
+{{{
+// initiate the spell checker on an element, then fire off the 'check' function
+$("textarea#text-content")
+.spellchecker({
+        lang: "en",
+        engine: "google"
+})
+.spellchecker("check");
+}}}
+You only want to execute the above code after an event has occured:
+{{{
+// initiating the spell checker is not necessary if using the default plugin options
+$("a.check-spelling").click(function(e){
+        e.preventDefault();
+        $("textarea#text-content").spellchecker("check");
+});
+}}}
+The plugin will fire off a callback function after it has finished checking words:
+{{{
+$("a.check-spelling").click(function(e){
+        e.preventDefault();
+        $("textarea#text-content").spellchecker("check", function(result){
+                // if result is true then there are no incorrectly spelt words
+                if (result) alert('There are no incorrectly spelt words.');
+        });
+});
+}}}
+And to remove all spellchecker html:
+{{{
+$("textarea#text-content").spellchecker("remove");
+}}}
