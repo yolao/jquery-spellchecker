@@ -32,7 +32,7 @@
 				$(".loading").hide();
 				// if result is true then there are no badly spelt words
 				if (result) {
-					alert('all done');
+					alert('There are no incorrectly spelt words.');
 				}
 			});					
 		}
@@ -48,7 +48,7 @@
 			$(".loading").hide();
 			// if result is true then there are no badly spelt words
 			if (result) {
-				alert('all done');
+				alert('There are no incorrectly spelt words.');
 			}
 		});
 	});	
