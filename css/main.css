@@ -75,7 +75,7 @@ input, select, textarea {
 }
 textarea {
 	border: 1px solid #999;
-	width: 100%;
+	width: 99%;
 	height: 21em;
 	font-family: inherit;
 }
