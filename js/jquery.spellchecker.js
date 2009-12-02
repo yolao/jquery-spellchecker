@@ -30,7 +30,7 @@
 		this.domObj = domObj;
 		this.options = $.extend({
 			rpc: "checkspelling.php",
-			engine: "google", // pspell or google
+			engine: "google" // pspell or google
 		}, options || {});
 		this.options.url = this.options.rpc+"?engine="+this.options.engine;
 		this.elements = {};
@@ -78,7 +78,7 @@
 					}
 					$(".spellcheck-word-highlight", self.elements.$badwords).click(function(){
 						self.suggest(this);
-					}).after("<span class=\"spellcheck-sep\">,</span>");
+					}).after("<span class=\"spellcheck-sep\">,</span> ");
 
 					$(".spellcheck-sep:last", self.elements.$badwords).addClass("spellcheck-sep-last");
 					(callback) && callback();
@@ -133,7 +133,8 @@
 				self.elements.$suggestWords.empty();
 				for(var i=0;i<(json.length<5?json.length:5);i++) {
 					var $replaceWord = $("<a></a>")
-						.attr({href: "#",class: (!i?'first':'')})
+						.attr({href: "#"})
+						.addClass((!i?'first':''))
 						.click(function(e){
 							e.preventDefault();
 							self.replace(domObj, this);
@@ -257,7 +258,7 @@
 			var self = this;
 			this.elements.$suggestWords = 
 				$("<div></div>")
-				.attr({class: "spellcheck-suggestbox-words"});
+				.addClass("spellcheck-suggestbox-words");
 			this.elements.$ignoreWord = 
 				$("<a></a>")
 				.attr({ title: "ignore word", href: "#" })
@@ -284,13 +285,13 @@
 				.text("Ignore forever");
 			this.elements.$suggestFoot = 
 				$("<div></div>")
-				.attr({class: "spellcheck-suggestbox-foot"})
+				.addClass("spellcheck-suggestbox-foot")
 				.append(this.elements.$ignoreWord)
 				.append(this.elements.$ignoreAllWords)
 				.append(this.options.engine == "pspel" ? this.elements.$ignoreWordsForever : false);
 			this.elements.$suggestBox = 
 				$("<div></div>")
-				.attr({class: "spellcheck-suggestbox"})
+				.addClass("spellcheck-suggestbox")
 				.append(this.elements.$suggestWords)
 				.append(this.elements.$suggestFoot)
 				.prependTo("body");
