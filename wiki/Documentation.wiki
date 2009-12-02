@@ -3,6 +3,8 @@ The plugin has 2 default behaviours:
  * If bound to a textarea element, the plugin will add the incorrectly spelt words after the textarea. Clicking on the words will bring up the suggest box.
  * View the [http://spellchecker.jquery.badsyntax.co.uk/ demo] to get a better idea of the default behaviour. 
 
+----
+
 *Server script*
 
 The plugin comes with an example PHP script that supports two type of spell checking engines: php's pspell extension for aspell, or google's spell checking services. If you are able to use pspell, you will have greater control over your dictionary (with the ability to manage your dictionary words). 
@@ -71,7 +73,6 @@ Include the following in the head section of your html document:
 
 The plugin can be used on most elements, although there is different behavior between form inputs (textareas, etc) and other elements.
 
-<strong>Default usage</strong>:
 {{{
 // initiate the spell checker on an element, then fire off the 'check' function
 $("textarea#text-content")
