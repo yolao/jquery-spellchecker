@@ -30,7 +30,7 @@
 		this.domObj = domObj;
 		this.options = $.extend({
 			rpc: "checkspelling.php",
-			engine: "google" // pspell or google
+			engine: "google", // pspell or google
 		}, options || {});
 		this.options.url = this.options.rpc+"?engine="+this.options.engine;
 		this.elements = {};
@@ -45,7 +45,7 @@
 			this.createElements();
 			// hide the suggest box on document click
 			$(document).bind("click", function(e){
-				if (!$(e.target).hasClass(".spellcheck-badspelling") && !$(e.target).parents().filter(".suggestDrop").length) {
+				if (!$(e.target).hasClass(".spellcheck-word-highlight") && !$(e.target).parents().filter(".spellcheck-suggestbox").length) {
 					self.hideBox();
 				}
 			});
@@ -72,14 +72,15 @@
 					}
 					for(var badword in json) {
 						$("<span></span>")
-						.addClass("spellcheck-badspelling")
+						.addClass("spellcheck-word-highlight")
 						.text(self.options.engine == 'pspell' ? json[badword] : text.substr(json[badword][0], json[badword][1]))
 						.appendTo(self.elements.$badwords);
 					}
-					$(".spellcheck-badspelling", self.elements.$badwords).click(function(){
+					$(".spellcheck-word-highlight", self.elements.$badwords).click(function(){
 						self.suggest(this);
 					}).after("<span class=\"spellcheck-sep\">,</span>");
-					$(".spellcheck-sep:last", self.elements.$badwords).remove();
+
+					$(".spellcheck-sep:last", self.elements.$badwords).addClass("spellcheck-sep-last");
 					(callback) && callback();
 				});
 			} else {
@@ -99,12 +100,12 @@
 							replace += replaceWord;
 							html = html.replace(
 								new RegExp("\\b("+replaceWord+")\\b", "ig"),
-								'<span class=\"spellcheck-badspelling\">$1</span>'
+								'<span class=\"spellcheck-word-highlight\">$1</span>'
 							);
 						}
 					}							
 					$(self.domObj).html(html);
-					$(".spellcheck-badspelling", self.domObj).click(function(){
+					$(".spellcheck-word-highlight", self.domObj).click(function(){
 						self.suggest(this);
 					});
 					(callback) && callback();
@@ -200,7 +201,7 @@
 			if (this.type == "textarea") {
 				this.$curWord.remove();
 			} else {
-				$("span.spellcheck-badspelling", self.domObj).each(function(){
+				$(".spellcheck-word-highlight", self.domObj).each(function(){
 					(new RegExp(self.$curWord.html(), "i").test(this.innerHTML)) && $(this).after(this.innerHTML).remove(); // remove anchor
 				});
 			}
@@ -226,9 +227,29 @@
 		
 		// remove spell check formatting
 		remove : function() {
-			$("span.spellcheck-badspelling", this.domObj).each(function(){
+			$(".spellcheck-word-highlight", this.domObj).each(function(){
 				$(this).after(this.innerHTML).remove()
 			});
+		},
+		
+		// sends post request, return JSON object
+		getJsonData : function(url, data, callback){
+			var xhr = $.ajax({
+				type : "POST",
+				url : url,
+				data : data,
+				dataType : "json",
+				error : function(XHR, status, error) {
+					alert("Sorry, there was an error processing the request.");
+				},
+				success : function(json){
+					if (!json.length) {
+						json.result = 1;	
+					}
+					(callback) && callback(json);
+				}
+			});
+			return xhr;
 		},
 
 		// creates the suggestbox
@@ -236,7 +257,7 @@
 			var self = this;
 			this.elements.$suggestWords = 
 				$("<div></div>")
-				.attr({id: "suggestwords"});
+				.attr({class: "spellcheck-suggestbox-words"});
 			this.elements.$ignoreWord = 
 				$("<a></a>")
 				.attr({ title: "ignore word", href: "#" })
@@ -263,37 +284,18 @@
 				.text("Ignore forever");
 			this.elements.$suggestFoot = 
 				$("<div></div>")
-				.attr({id: "suggestfoot", class: "foot"})
+				.attr({class: "spellcheck-suggestbox-foot"})
 				.append(this.elements.$ignoreWord)
 				.append(this.elements.$ignoreAllWords)
 				.append(this.options.engine == "pspel" ? this.elements.$ignoreWordsForever : false);
 			this.elements.$suggestBox = 
 				$("<div></div>")
-				.attr({id: "suggestbox", class: "suggestDrop"})
+				.attr({class: "spellcheck-suggestbox"})
 				.append(this.elements.$suggestWords)
 				.append(this.elements.$suggestFoot)
 				.prependTo("body");
-		},
-		
-		// sends post request, return JSON object
-		getJsonData : function(url, data, callback){
-			var xhr = $.ajax({
-				type : "POST",
-				url : url,
-				data : data,
-				dataType : "json",
-				error : function(XHR, status, error) {
-					alert("Sorry, there was an error processing the request.");
-				},
-				success : function(json){
-					if (!json.length) {
-						json.result = 1;	
-					}
-					(callback) && callback(json);
-				}
-			});
-			return xhr;
 		}
+		
 	};	
 
 })(jQuery);
