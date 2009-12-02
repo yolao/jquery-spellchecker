@@ -9,20 +9,22 @@
  */
 
 
-!isset($_GET['engine']) and die('no spell engine specified');
+!isset($_REQUEST['engine']) and exit('error: no spell engine specified');
 
-$Spelling = new Spelling($_GET['engine']);
+$Spelling = new Spelling($_REQUEST['engine']);
 
 class Spelling {
 
-	// site specific personal dictionary
-	protected $pspell_personal_dictionary = '/srv/projects/jquery-spellchecker.localdomain/dictionary/custom.pws';
+	// site specific personal dictionary folder, needs to have write perms
+	protected $pspell_personal_dictionary = '/srv/projects/jquery-spellchecker.localdomain/dictionary';
 
-	// pspell language
-	protected $pspell_lang = 'en';
+	// default language
+	protected $lang = 'en';
 
 	public function __construct($rpc="google") {
 		!isset($_GET['noheaders']) and $this->sendHeaders();
+		if (isset($_REQUEST['lang']) and $_REQUEST['lang']) $this->lang = $_REQUEST['lang'];
+		$this->pspell_personal_dictionary .= '/'.$this->lang.'.pws';
 		method_exists($this, $rpc) and $this->$rpc();
 	}
 
@@ -33,7 +35,7 @@ class Spelling {
 		}
 
 		// load the dictionary
-		$pspell_link = @pspell_new_personal($this->pspell_personal_dictionary, $this->pspell_lang) or die('PSpell error');
+		$pspell_link = pspell_new_personal($this->pspell_personal_dictionary, $this->lang);
 		
 		// return suggestions
 		if (isset($suggest)) {
@@ -72,7 +74,7 @@ class Spelling {
 			$words = array();
 			foreach($matches = $this->getGoogleMatches(stripslashes($text)) as $word) {
 				// position & length of badly spelt word
-				$words[] = array($word[1], $word[2]);
+				$words[] = substr($text, $word[1], $word[2]);
 			}
 			exit(json_encode($words));
 		}
@@ -81,16 +83,15 @@ class Spelling {
 			$matches = 
 			$this->getGoogleMatches($suggest) and
 			$matches[0][4] and 
-			exit(json_encode(explode("\t", utf8_encode(html_entity_decode($matches[0][4]))))) or
+			exit(json_encode(explode("\t", $matches[0][4]))) or
 			exit(json_encode(array()));
 		}	
 	}
 	
-	private static function getGoogleMatches($str) {
-		$lang = 'en';
+	private function getGoogleMatches($str) {
 		$server = 'www.google.com';
 		$port = 443;
-		$path = '/tbproxy/spell?lang='.$lang.'&hl=en';
+		$path = '/tbproxy/spell?lang='.$this->lang.'&hl=en';
 		$host = 'www.google.com';
 		$url = 'https://' . $server;
 
@@ -114,7 +115,7 @@ class Spelling {
 		// response data
 		$xml_response = '';
 
-		// Use curl if it exists
+		// use curl if it exists
 		if (function_exists('curl_init')) {
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL,$url);
@@ -124,13 +125,13 @@ class Spelling {
 			$xml_response = curl_exec($ch);
 			curl_close($ch);
 		} else {
-			// Use raw sockets
+			// use raw sockets
 			$fp = @fsockopen('ssl://'.$server, $port, $errno, $errstr, 30) or die("Unable to contact spellcheck server: {$server} on port: {$port}");
 			if ($fp) {
-				// Send request
+				// send request
 				fwrite($fp, $header);
 
-				// Read response
+				// read response
 				$xml_response = '';
 				while (!feof($fp)) {
 					$xml_response .= @fgets($fp, 128);
@@ -141,9 +142,11 @@ class Spelling {
 			}
 		}
 
-		// Grab and parse content, remove google XML formatting
+		// grab and parse content, remove google XML formatting
 		$matches = array();
 		preg_match_all('/<c o="([^"]*)" l="([^"]*)" s="([^"]*)">([^<]*)<\/c>/', $xml_response, $matches, PREG_SET_ORDER);
+
+		// note: google will return encoded data, so no need to encode ut8 characters!
 		return $matches;
 	}
 	
