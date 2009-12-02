@@ -29,7 +29,7 @@
 	var SpellChecker = function(domObj, options) {
 		this.options = $.extend({
 			rpc: "checkspelling.php",
-			lang: "de", 
+			lang: "en", 
 			engine: "pspell" // pspell or google
 		}, options || {});
 		this.options.url = this.options.rpc+"?engine="+this.options.engine;
