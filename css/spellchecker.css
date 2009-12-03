@@ -4,16 +4,20 @@
 	z-index: 9999;
 	overflow: none;
 	padding: 0px 9px 9px 0px;
-	margin-top: 1px;
 	background: transparent url(../img/spellchecker/shadow.png) no-repeat scroll right bottom;
 	font: normal 13px arial;
+	width: 200px;
 }
 .spellcheck-suggestbox em {
-	text-align: center;
-	padding: 3px 6px;
-	display: block;
 	border-top: 1px solid #ccc;
-	border-left: 1px solid #ccc;
+	font-style: italic;
+	border-left: 1px solid #bbb;
+	border-right: 1px solid #bbb;
+	padding: 3px 6px 3px 6px;
+	display: block;
+	margin: 0px;
+	text-decoration: none;
+	color: #333;
 }
 .spellcheck-suggestbox a, .spellcheck-suggestbox a:visited {
 	border-left: 1px solid #bbb;

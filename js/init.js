@@ -58,7 +58,8 @@
 		$("#text-content")
 		.spellchecker({
 			engine: $("#textarea-service").val(),
-			lang: $("#textarea-lang").val()
+			lang: $("#textarea-lang").val(),
+			suggestBoxPosition: "top"
 		})
 		.spellchecker("check", function(result){
 			// spell checker has finished checking words
