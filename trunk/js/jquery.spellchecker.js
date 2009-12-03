@@ -30,7 +30,9 @@
 		this.options = $.extend({
 			rpc: "checkspelling.php",
 			lang: "en", 
-			engine: "pspell" // pspell or google
+			engine: "pspell",	// pspell or google
+			after: domObj,		// after which element to insert the bad words list into dom, can be use selector
+			append: ""		// optional, will default to this if value is given, can be selector
 		}, options || {});
 		this.options.url = this.options.rpc+"?engine="+this.options.engine;
 		this.domObj = domObj;
@@ -40,7 +42,6 @@
 
 	SpellChecker.prototype = {
 
-		// initial setup
 		init : function(){
 			var self = this;
 			this.createElements();
@@ -69,7 +70,11 @@
 						// we only want one instance of this block in the dom
 						if (!$("#spellcheck-badwords").length) {
 							self.elements.$badwords = $("<div></div>").attr("id", "spellcheck-badwords");
-							$(self.domObj).after(self.elements.$badwords);
+							if (self.options.append) {
+								$(self.options.append).append(self.elements.$badwords);
+							} else {
+								$(self.options.after).after(self.elements.$badwords);
+							}
 						} else {
 							self.elements.$badwords = $("#spellcheck-badwords").empty();
 						}
