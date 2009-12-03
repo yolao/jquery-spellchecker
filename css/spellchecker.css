@@ -56,3 +56,6 @@
 .spellcheck-sep {
 	padding-right: 0.5em;
 }
+.spellcheck-sep-last {
+	display: none;
+}
