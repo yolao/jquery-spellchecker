@@ -140,18 +140,21 @@
 			this.elements.$suggestWords.html('<em>Loading..</em>');
 			this.elements.$suggestBox
 			.css({
-				width : this.elements.$suggestBox.outerWidth() < $domObj.outerWidth() ? $domObj.innerWidth()+"px" : "auto",
+				width : "auto",
 				left : offset.left+"px",
 				top : 
 					(this.options.suggestBoxPosition == "top" ?
-					(offset.top - ($domObj.outerHeight() + self.elements.$suggestWords.outerHeight() + 10)) + "px" :
+					(offset.top - ($domObj.outerHeight() + 10)) + "px" :
 					(offset.top + $domObj.outerHeight()) + "px")
 			}).fadeIn(200);		
 
 			this.getJsonData(this.options.url, {suggest: $.trim($domObj.text()), lang: this.options.lang}, function(json){
+
+				self.elements.$suggestFoot.show();
+				self.elements.$suggestWords.html("");
+
 				// build suggest word list
-				self.elements.$suggestWords.empty();
-				for(var i=0;i<(json.length<5?json.length:5);i++) {
+				for(var i=0;i<(json.length < 5 ? json.length : 5);i++) {
 					var $replaceWord = $("<a></a>")
 						.attr({href: "#"})
 						.addClass((!i?'first':''))
@@ -162,24 +165,23 @@
 						.text(json[i]);
 					self.elements.$suggestWords.append($replaceWord);
 				}								
+
 				// no suggestions
 				(!i) && self.elements.$suggestWords.append('<em>(no suggestions)</em>');
 							
 				// show the suggest box
-				self.elements.$suggestFoot.show();
 				self.elements.$suggestBox
 				.css({
 					top : 
 						(self.options.suggestBoxPosition == "top" ?
 						(offset.top - (self.elements.$suggestBox.height()+5)) + "px" : 
 						(offset.top + $domObj.outerHeight()) + "px"),
-					width : 
-						(self.elements.$suggestBox.outerWidth() < $domObj.outerWidth() ? $domObj.innerWidth() + "px" : "auto"),
+					width : "auto",
 					left : 
 						(self.elements.$suggestBox.outerWidth() + offset.left > $("body").width() ? 
 						(offset.left - self.elements.$suggestBox.width()) + $domObj.outerWidth()+"px" : 
 						offset.left+"px")
-				});				
+				});
 
 			});
 		},
