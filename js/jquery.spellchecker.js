@@ -30,9 +30,10 @@
 		this.options = $.extend({
 			rpc: "checkspelling.php",
 			lang: "en", 
-			engine: "pspell",	// pspell or google
-			after: domObj,		// after which element to insert the bad words list into dom, can be use selector
-			append: ""		// optional, will default to this if value is given, can be selector
+			engine: "pspell",		// pspell or google
+			after: domObj,			// after which element to insert the bad words list into dom, can be use selector
+			append: "",			// optional, will default to this if value is given, can be selector
+			suggestBoxPosition: "bottom"	// default position of suggest box; top or bottom
 		}, options || {});
 		this.options.url = this.options.rpc+"?engine="+this.options.engine;
 		this.domObj = domObj;
@@ -141,7 +142,10 @@
 			.css({
 				width : this.elements.$suggestBox.outerWidth() < $domObj.outerWidth() ? $domObj.innerWidth()+"px" : "auto",
 				left : offset.left+"px",
-				top : (offset.top + $domObj.outerHeight()) + "px"
+				top : 
+					(this.options.suggestBoxPosition == "top" ?
+					(offset.top - ($domObj.outerHeight() + self.elements.$suggestWords.outerHeight() + 10)) + "px" :
+					(offset.top + $domObj.outerHeight()) + "px")
 			}).fadeIn(200);		
 
 			this.getJsonData(this.options.url, {suggest: $.trim($domObj.text()), lang: this.options.lang}, function(json){
@@ -165,9 +169,16 @@
 				self.elements.$suggestFoot.show();
 				self.elements.$suggestBox
 				.css({
-					width : self.elements.$suggestBox.outerWidth() < $domObj.outerWidth() ? $domObj.innerWidth()+"px" : "auto",
-					left : self.elements.$suggestBox.outerWidth() + offset.left > $("body").width() ? 
-						(offset.left - self.elements.$suggestBox.width()) + $domObj.outerWidth()+"px":offset.left+"px"
+					top : 
+						(self.options.suggestBoxPosition == "top" ?
+						(offset.top - (self.elements.$suggestBox.height()+5)) + "px" : 
+						(offset.top + $domObj.outerHeight()) + "px"),
+					width : 
+						(self.elements.$suggestBox.outerWidth() < $domObj.outerWidth() ? $domObj.innerWidth() + "px" : "auto"),
+					left : 
+						(self.elements.$suggestBox.outerWidth() + offset.left > $("body").width() ? 
+						(offset.left - self.elements.$suggestBox.width()) + $domObj.outerWidth()+"px" : 
+						offset.left+"px")
 				});				
 
 			});
