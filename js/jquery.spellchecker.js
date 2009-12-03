@@ -183,7 +183,7 @@
 		replaceTextbox : function(domObj, replace){
 			$(domObj).next().remove();
 			$(domObj).remove();
-			$(this.domObj).val($(this.domObj).val().replace(new RegExp(domObj.innerHTML, "i"), replace.innerHTML));
+			$(this.domObj).val($(this.domObj).val().replace(new RegExp("\\b"+domObj.innerHTML+"\\b", "ig"), replace.innerHTML));
 		},
 
 		// replace word in an HTML container that is not a form field
