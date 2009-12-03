@@ -1,3 +1,4 @@
+#labels Featured,Phase-Implementation
 The plugin has 2 default behaviours:
  * If bound to a HTML element that is not a textarea, the plugin will highlight the incorrectly spelt words. Clicking on the words will bring up the suggest box.
  * If bound to a textarea element, the plugin will add the incorrectly spelt words after the textarea. Clicking on the words will bring up the suggest box.
@@ -71,8 +72,7 @@ Include the following in the head section of your html document:
 <script type="text/javascript" src="js/jquery.spellchecker.js"></script>
 }}}
 
-The plugin can be used on most elements, although there is different behavior between form inputs (textareas, etc) and other elements.
-
+Defaut usage:
 {{{
 // initiate the spell checker on an element, then fire off the 'check' function
 $("textarea#text-content")
