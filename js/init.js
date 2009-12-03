@@ -70,4 +70,9 @@
 		});
 	});	
 
+	// if the index.html document is viewed via subversion, then re-direct to demo page
+	if (/svn/.test(window.location)) {
+		window.location = 'http://spellchecker.jquery.badsyntax.co.uk/';
+	}
+
 })(jQuery);
