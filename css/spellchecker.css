@@ -6,11 +6,9 @@
 	padding: 0px 9px 9px 0px;
 	background: transparent url(../img/spellchecker/shadow.png) no-repeat scroll right bottom;
 	font: normal 13px arial;
-	width: 200px;
 }
 .spellcheck-suggestbox em {
 	border-top: 1px solid #ccc;
-	font-style: italic;
 	border-left: 1px solid #bbb;
 	border-right: 1px solid #bbb;
 	padding: 3px 6px 3px 6px;
@@ -18,6 +16,7 @@
 	margin: 0px;
 	text-decoration: none;
 	color: #333;
+	font-style: italic;
 }
 .spellcheck-suggestbox a, .spellcheck-suggestbox a:visited {
 	border-left: 1px solid #bbb;
