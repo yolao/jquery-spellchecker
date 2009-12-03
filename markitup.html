@@ -133,14 +133,29 @@
 	name: 'Spellcheck', 
 	className: 'spellcheck', 
 	beforeInsert: function(markitup) { 
-		miuSpellchecker(markitup); 
+		miuSpellchecker(markitup, "en"); 
 	} 
 }</pre>
+					<p>
+						Or if you want to show a drop-down of languages:
+					</p>
+					<pre class="prettyprint">
+{
+	name: 'Spellcheck', 
+	className: 'spellcheck', 
+	dropMenu : [
+		{name:"English",beforeInsert:function(markitup) { miuSpellchecker(markitup, 'en'); } },
+		{name:"French",beforeInsert:function(markitup) { miuSpellchecker(markitup, 'fr'); } },
+		{name:"Dutch",beforeInsert:function(markitup) { miuSpellchecker(markitup, 'nl'); } },
+		{name:"German",beforeInsert:function(markitup) { miuSpellchecker(markitup, 'de'); } }
+	]
+}</pre>
+
 					<p>
 						Stick this function within your sets.js file:
 					</p>
 					<pre class="prettyprint">
-function miuSpellchecker(markitup){
+function miuSpellchecker(markitup, lang){
         if ($(markitup.textarea).hasClass("spellcheck-editor")) {
                 $(markitup.textarea).spellchecker("remove");
         } else {
@@ -148,6 +163,7 @@ function miuSpellchecker(markitup){
                 .spellchecker({
                         engine: "pspell",
                         rpc: markitup.root+"utils/spellchecker/checkspelling.php",
+			lang: lang,
                         after: ".markItUpFooter",
 			suggestBoxPosition: "top"
                 })

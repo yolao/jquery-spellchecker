@@ -274,6 +274,7 @@
 			});
 			$("#spellcheck-badwords").remove();
 			$(this.domObj).removeClass("spellcheck-container");
+			this.elements.$suggestBox.remove();
 		},
 		
 		// sends post request, return JSON object
