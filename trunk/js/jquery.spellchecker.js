@@ -45,6 +45,7 @@
 		init : function(){
 			var self = this;
 			this.createElements();
+			$(this.domObj).addClass("spellcheck-container");
 			// hide the suggest box on document click
 			$(document).bind("click", function(e){
 				if (!$(e.target).hasClass(".spellcheck-word-highlight") && !$(e.target).parents().filter(".spellcheck-suggestbox").length) {
@@ -56,11 +57,15 @@
 		// checks a chunk of text for bad words, then either shows the words below the original element (if texarea) or highlights the bad words
 		check : function(callback){
 
-			var self = this, node = this.domObj.nodeName, puncExp = '^\\W|[\\W]+\\W|\\W$|\\n|\\t|\\s{2,}';
+			var self = this, node = this.domObj.nodeName, tagExp = '<[^>]+>', puncExp = '^\\W|[\\W]+\\W|\\W$|\\n|\\t|\\s{2,}';
 		
 			if (node == "TEXTAREA" || node == "INPUT") {
 				this.type = 'textarea';
-				var text = $.trim($(this.domObj).val().replace(new RegExp(puncExp, "g"), " ")); // strip punctuation
+				var text = $.trim(
+					$(this.domObj).val()
+					.replace(new RegExp(tagExp, "g"), "")	// strip html tags
+					.replace(new RegExp(puncExp, "g"), " ") // strip punctuation
+				);
 				this.getJsonData(this.options.url, {text: text, lang: this.options.lang}, function(json){
 					if (json.result) {
 						callback(1);
@@ -186,8 +191,7 @@
 
 		// replace word in a textarea
 		replaceTextbox : function(domObj, replace){
-			$(domObj).next().remove();
-			$(domObj).remove();
+			this.removeBadword($(domObj));
 			$(this.domObj).val($(this.domObj).val().replace(new RegExp("\\b"+domObj.innerHTML+"\\b", "ig"), replace.innerHTML));
 		},
 
@@ -200,7 +204,7 @@
 		ignore : function() {
 			this.hideBox();
 			if (this.type == "textarea") {
-				this.$curWord.remove();
+				this.removeBadword(this.$curWord);
 			} else {
 				this.$curWord.after(this.$curWord.html()).remove();
 			}
@@ -211,11 +215,21 @@
 			var self = this;
 			this.hideBox();
 			if (this.type == "textarea") {
-				this.$curWord.remove();
+				this.removeBadword(this.$curWord);
 			} else {
 				$(".spellcheck-word-highlight", self.domObj).each(function(){
 					(new RegExp(self.$curWord.html(), "i").test(this.innerHTML)) && $(this).after(this.innerHTML).remove(); // remove anchor
 				});
+			}
+		},
+
+		removeBadword : function($domObj){
+			($domObj.next().hasClass("spellcheck-sep")) && $domObj.next().remove();
+			$domObj.remove();
+			if (!$(".spellcheck-sep", this.elements.$badwords).length){
+				this.remove();
+			} else {
+				$(".spellcheck-sep:last", this.elements.$badwords).addClass("spellcheck-sep-last");
 			}
 		},
 		
@@ -242,9 +256,11 @@
 		
 		// remove spell check formatting
 		remove : function() {
-			$(".spellcheck-word-highlight", this.domObj).each(function(){
+			$(".spellcheck-word-highlight").each(function(){
 				$(this).after(this.innerHTML).remove()
 			});
+			$("#spellcheck-badwords").remove();
+			$(this.domObj).removeClass("spellcheck-container");
 		},
 		
 		// sends post request, return JSON object

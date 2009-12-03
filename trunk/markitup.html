@@ -10,7 +10,6 @@
 	<link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/prettify.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/spellchecker.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/ui.selectmenu.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="markitup/skins/markitup/style.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="markitup/sets/default/style.css" />
 	<style type="text/css">
@@ -133,7 +132,7 @@
 	name: 'Spellcheck', 
 	className: 'spellcheck', 
 	beforeInsert: function(markitup) { 
-		new miuSpellchecker(markitup); 
+		miuSpellchecker(markitup); 
 	} 
 }</pre>
 					<p>
@@ -141,17 +140,22 @@
 					</p>
 					<pre class="prettyprint">
 function miuSpellchecker(markitup){
-        $(markitup.textarea)
-        .spellchecker({
-                engine: "google",
-		rpc: markitup.root+"utils/spellchecker/checkspelling.php",
-                after: ".markItUpFooter"
-        })
-        .spellchecker("check", function(result){
-                if (result) {
-                        alert('There are no incorrectly spelt words.');
-                }
-        });
+        if ($(markitup.textarea).hasClass("spellcheck-editor")) {
+                $(markitup.textarea).spellchecker("remove");
+        } else {
+                $(markitup.textarea)
+                .spellchecker({
+                        engine: "pspell",
+                        rpc: markitup.root+"utils/spellchecker/checkspelling.php",
+                        after: ".markItUpFooter"
+                })
+                .spellchecker("check", function(result){
+                        if (result) {
+				$(markitup.textarea).spellchecker("remove");
+                                alert('There are no incorrectly spelt words.');
+                        }
+                });
+        }
 }</pre>
 					<p>
 						Add the following CSS to your sets style.css file:
@@ -173,10 +177,9 @@ function miuSpellchecker(markitup){
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="js/prettify.js"></script>
+	<script type="text/javascript" src="js/jquery.spellchecker.js"></script>
 	<script type="text/javascript" src="markitup/jquery.markitup.pack.js"></script>
 	<script type="text/javascript" src="markitup/sets/default/set.js"></script>
-	<script type="text/javascript" src="js/jquery.spellchecker.js"></script>
-	<script type="text/javascript" src="js/ui.selectmenu.js"></script>
 	<script type="text/javascript">
 	$(document).ready(function()	{
 		$("#tabs").tabs();
