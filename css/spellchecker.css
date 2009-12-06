@@ -55,6 +55,8 @@
 	margin-bottom: 2em;
 	margin-top: -0.5em;
 	font-size: 12px;
+	border: 1px solid #BBB;
+	padding: 4px 6px;
 }
 .spellcheck-sep {
 	padding-right: 0.5em;

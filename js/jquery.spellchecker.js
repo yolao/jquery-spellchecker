@@ -67,62 +67,57 @@
 					.replace(new RegExp(tagExp, "g"), "")	// strip html tags
 					.replace(new RegExp(puncExp, "g"), " ") // strip punctuation
 				);
-				this.getJsonData(this.options.url, {text: text, lang: this.options.lang}, function(json){
-					if (json.result) {
-						callback(1);
-						return;
-					}
-					if (!self.elements.$badwords) {
-						// we only want one instance of this block in the dom
-						if (!$("#spellcheck-badwords").length) {
-							self.elements.$badwords = $("<div></div>").attr("id", "spellcheck-badwords");
-							if (self.options.append) {
-								$(self.options.append).append(self.elements.$badwords);
-							} else {
-								$(self.options.after).after(self.elements.$badwords);
-							}
-						} else {
-							self.elements.$badwords = $("#spellcheck-badwords").empty();
-						}
-					} else {
-						self.elements.$badwords.html("");
-					}
-					for(var badword in json) {
-						$("<span></span>")
-						.addClass("spellcheck-word-highlight")
-						.text(json[badword])
-						.appendTo(self.elements.$badwords);
-					}
-					$(".spellcheck-word-highlight", self.elements.$badwords).click(function(){
-						self.suggest(this);
-					}).after("<span class=\"spellcheck-sep\">,</span> ");
-
-					$(".spellcheck-sep:last", self.elements.$badwords).addClass("spellcheck-sep-last");
-					(callback) && callback();
+				this.postJson(this.options.url, {text: text, lang: this.options.lang}, function(json){
+					self.buildBadwordsBox(json, callback);
 				});
 			} else {
 				this.type = 'html';
 				var text = $.trim($(this.domObj).text().replace(new RegExp(puncExp, "g"), " ")); // strip punctuation
-				this.getJsonData(this.options.url, {text: text, lang: this.options.lang}, function(json){
-					if (json.result) {
-						callback(1);
-						return;
-					}
-					var html = $(self.domObj).html();
-					// highlight bad words
-					$.each(json, function(key, replaceWord){
-						html = html.replace(
-							new RegExp("\\b("+replaceWord+")\\b", "ig"),
-							'<span class=\"spellcheck-word-highlight\">$1</span>'
-						);
-					});			
-					$(self.domObj).html(html);
-					$(".spellcheck-word-highlight", self.domObj).click(function(){
-						self.suggest(this);
-					});
-					(callback) && callback();
+				this.postJson(this.options.url, {text: text, lang: this.options.lang}, function(json){
+					self.highlightWords(json, callback);
 				});
 			}
+		},
+
+		highlightWords : function(json, callback) {
+			if (!json.length) { callback(true); return; }
+
+			var self = this, html = $(this.domObj).html();
+
+			$.each(json, function(key, replaceWord){
+				html = html.replace(
+					new RegExp("\\b("+replaceWord+")\\b", "ig"),
+					'<span class=\"spellcheck-word-highlight\">$1</span>'
+				);
+			});
+			$(this.domObj).html(html);
+			$(".spellcheck-word-highlight", this.domObj).click(function(){
+				self.suggest(this);
+			});
+			(callback) && callback();
+		},
+
+		buildBadwordsBox : function(json, callback){
+			if (!json.length) { callback(true); return; }
+
+			var self = this, words = [];
+
+			if (!$("#spellcheck-badwords").length) {
+				(this.options.append) &&
+				$(this.options.append).append(this.elements.$badwords.empty()) ||
+				$(this.options.after).after(this.elements.$badwords.empty());
+			}
+			$.each(json, function(key, badword) {
+				if ($.inArray(badword, words) === -1) {
+					$('<span class="spellcheck-word-highlight">'+badword+'</span>')
+						.click(function(){ self.suggest(this); })
+						.appendTo(self.elements.$badwords)
+						.after("<span class=\"spellcheck-sep\">,</span> ");
+					words.push(badword);
+				}
+			});
+			$(".spellcheck-sep:last", self.elements.$badwords).addClass("spellcheck-sep-last");
+			(callback) && callback();
 		},
 
 		// gets a list of suggested words, appends to the suggestbox and shows the suggestbox
@@ -143,41 +138,46 @@
 					(offset.top + $domObj.outerHeight()) + "px")
 			}).fadeIn(200);		
 
-			this.getJsonData(this.options.url, {suggest: $.trim($domObj.text()), lang: this.options.lang}, function(json){
+			this.postJson(this.options.url, {suggest: $.trim($domObj.text()), lang: this.options.lang}, function(json){
+				self.buildSuggestBox(json, offset);
+			});
+		},
 
-				self.elements.$suggestFoot.show();
-				self.elements.$suggestWords.empty();
+		buildSuggestBox : function(json, offset){
 
-				// build suggest word list
-				for(var i=0; i < (json.length < 5 ? json.length : 5); i++) {
-					self.elements.$suggestWords.append(
-						$('<a href="#">'+json[i]+'</a>').addClass((!i?'first':''))
-						.click(function(e){
-							e.preventDefault();
-							self.replace(domObj, this);
-						})
-					);
-				}								
+			var self = this, $domObj = this.$curWord;
 
-				// no word suggestions
-				(!i) && self.elements.$suggestWords.append('<em>(no suggestions)</em>');
+			this.elements.$suggestFoot.show();
+			this.elements.$suggestWords.empty();
 
-				// get browser viewport height
-				var viewportHeight = window.innrHeight ? window.innerHeight : $(window).height();
-							
-				// position the suggest box
-				self.elements.$suggestBox
-				.css({
-					top :	(self.options.suggestBoxPosition == "top") ||
-						(offset.top + $domObj.outerHeight() + self.elements.$suggestBox.outerHeight() > viewportHeight + 10) ?
-						(offset.top - (self.elements.$suggestBox.height()+5)) + "px" : 
-						(offset.top + $domObj.outerHeight() + "px"),
-					width : "auto",
-					left :	(self.elements.$suggestBox.outerWidth() + offset.left > $("body").width() ? 
-						(offset.left - self.elements.$suggestBox.width()) + $domObj.outerWidth()+"px" : 
-						offset.left+"px")
-				});
+			// build suggest word list
+			for(var i=0; i < (json.length < 5 ? json.length : 5); i++) {
+				this.elements.$suggestWords.append(
+					$('<a href="#">'+json[i]+'</a>').addClass((!i?'first':''))
+					.click(function(e){
+						e.preventDefault();
+						self.replace(domObj, this);
+					})
+				);
+			}								
 
+			// no word suggestions
+			(!i) && this.elements.$suggestWords.append('<em>(no suggestions)</em>');
+
+			// get browser viewport height
+			var viewportHeight = window.innrHeight ? window.innerHeight : $(window).height();
+						
+			// position the suggest box
+			self.elements.$suggestBox
+			.css({
+				top :	(this.options.suggestBoxPosition == "top") ||
+					(offset.top + $domObj.outerHeight() + this.elements.$suggestBox.outerHeight() > viewportHeight + 10) ?
+					(offset.top - (this.elements.$suggestBox.height()+5)) + "px" : 
+					(offset.top + $domObj.outerHeight() + "px"),
+				width : "auto",
+				left :	(this.elements.$suggestBox.outerWidth() + offset.left > $("body").width() ? 
+					(offset.left - this.elements.$suggestBox.width()) + $domObj.outerWidth()+"px" : 
+					offset.left+"px")
 			});
 		},
 
@@ -246,18 +246,9 @@
 			var self= this;
 			this.hideBox(function(){
 				confirm("Are you sure you want to add the word \""+self.$curWord.text()+"\" to the dictionary?") &&
-				$.ajax({
-					type : "POST",
-					url : self.options.url,
-					data : 'addtodictionary='+self.$curWord.html(),
-					dataType : "json",
-					error : function(XHR, status, error) {
-						alert("Sorry, there was an error processing the request.");
-					},
-					success: function(){
-						self.ignoreAll();
-						self.check();
-					}
+				this.postJson(self.options.url, {addtodictionary: self.$curWord.text()}, function(){
+					self.ignoreAll();
+					self.check();
 				});			
 			});
 		},
@@ -273,7 +264,7 @@
 		},
 		
 		// sends post request, return JSON object
-		getJsonData : function(url, data, callback){
+		postJson : function(url, data, callback){
 			var xhr = $.ajax({
 				type : "POST",
 				url : url,
@@ -284,9 +275,6 @@
 					alert("Sorry, there was an error processing the request.");
 				},
 				success : function(json){
-					if (!json.length) {
-						json.result = 1;	
-					}
 					(callback) && callback(json);
 				}
 			});
@@ -322,6 +310,8 @@
 				.append(this.elements.$ignoreWord)
 				.append(this.elements.$ignoreAllWords)
 				.append(this.options.engine == "pspell" ? this.elements.$ignoreWordsForever : false);
+			this.elements.$badwords = 
+				$('<div id="spellcheck-badwords"></div>');
 			this.elements.$suggestBox = 
 				$("<div></div>")
 				.addClass("spellcheck-suggestbox")
