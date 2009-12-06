@@ -36,7 +36,7 @@
 			suggestBoxPosition: "bottom"	// default position of suggest box; top or bottom
 		}, options || {});
 		this.options.url = this.options.rpc+"?engine="+this.options.engine;
-		this.domObj = domObj;
+		this.$domObj = $(domObj);
 		this.elements = {};
 		this.init();
 	};
@@ -46,7 +46,7 @@
 		init : function(){
 			var self = this;
 			this.createElements();
-			$(this.domObj).addClass("spellcheck-container");
+			this.$domObj.addClass("spellcheck-container");
 			// hide the suggest box on document click
 			$(document).bind("click", function(e){
 				if (!$(e.target).hasClass(".spellcheck-word-highlight") && !$(e.target).parents().filter(".spellcheck-suggestbox").length) {
@@ -58,12 +58,12 @@
 		// checks a chunk of text for bad words, then either shows the words below the original element (if texarea) or highlights the bad words
 		check : function(callback){
 
-			var self = this, node = this.domObj.nodeName, tagExp = '<[^>]+>', puncExp = '^\\W|[\\W]+\\W|\\W$|\\n|\\t|\\s{2,}';
+			var self = this, node = this.$domObj.get(0).nodeName, tagExp = '<[^>]+>', puncExp = '^\\W|[\\W]+\\W|\\W$|\\n|\\t|\\s{2,}';
 		
 			if (node == "TEXTAREA" || node == "INPUT") {
 				this.type = 'textarea';
 				var text = $.trim(
-					$(this.domObj).val()
+					this.$domObj.val()
 					.replace(new RegExp(tagExp, "g"), "")	// strip html tags
 					.replace(new RegExp(puncExp, "g"), " ") // strip punctuation
 				);
@@ -72,7 +72,10 @@
 				});
 			} else {
 				this.type = 'html';
-				var text = $.trim($(this.domObj).text().replace(new RegExp(puncExp, "g"), " ")); // strip punctuation
+				var text = $.trim(
+					this.$domObj.text()
+					.replace(new RegExp(puncExp, "g"), " ") // strip punctuation
+				);
 				this.postJson(this.options.url, {text: text, lang: this.options.lang}, function(json){
 					self.highlightWords(json, callback);
 				});
@@ -82,15 +85,15 @@
 		highlightWords : function(json, callback) {
 			if (!json.length) { callback(true); return; }
 
-			var self = this, html = $(this.domObj).html();
+			var self = this, html = this.$domObj.html();
 
 			$.each(json, function(key, replaceWord){
 				html = html.replace(
-					new RegExp("\\b("+replaceWord+")\\b", "ig"),
+					new RegExp("\\b("+replaceWord+")\\b", "g"),
 					'<span class=\"spellcheck-word-highlight\">$1</span>'
 				);
 			});
-			$(this.domObj).html(html);
+			this.$domObj.html(html);
 			$(".spellcheck-word-highlight", this.domObj).click(function(){
 				self.suggest(this);
 			});
@@ -121,10 +124,10 @@
 		},
 
 		// gets a list of suggested words, appends to the suggestbox and shows the suggestbox
-		suggest : function(domObj){
+		suggest : function(word){
 
-			var self = this, $domObj = $(domObj), offset = $domObj.offset();
-			this.$curWord = $(domObj);
+			var self = this, $word = $(word), offset = $word.offset();
+			this.$curWord = $word;
 		
 			this.elements.$suggestFoot.hide();	
 			this.elements.$suggestWords.html('<em>Loading..</em>');
@@ -134,18 +137,18 @@
 				left : offset.left + "px",
 				top : 
 					(this.options.suggestBoxPosition == "top" ?
-					(offset.top - ($domObj.outerHeight() + 10)) + "px" :
-					(offset.top + $domObj.outerHeight()) + "px")
+					(offset.top - ($word.outerHeight() + 10)) + "px" :
+					(offset.top + $word.outerHeight()) + "px")
 			}).fadeIn(200);		
 
-			this.postJson(this.options.url, {suggest: $.trim($domObj.text()), lang: this.options.lang}, function(json){
+			this.postJson(this.options.url, {suggest: $.trim($word.text()), lang: this.options.lang}, function(json){
 				self.buildSuggestBox(json, offset);
 			});
 		},
 
 		buildSuggestBox : function(json, offset){
 
-			var self = this, $domObj = this.$curWord;
+			var self = this, $word = this.$curWord;
 
 			this.elements.$suggestFoot.show();
 			this.elements.$suggestWords.empty();
@@ -156,7 +159,7 @@
 					$('<a href="#">'+json[i]+'</a>').addClass((!i?'first':''))
 					.click(function(e){
 						e.preventDefault();
-						self.replace(domObj, this);
+						self.replace(this.innerHTML);
 					})
 				);
 			}								
@@ -171,12 +174,12 @@
 			self.elements.$suggestBox
 			.css({
 				top :	(this.options.suggestBoxPosition == "top") ||
-					(offset.top + $domObj.outerHeight() + this.elements.$suggestBox.outerHeight() > viewportHeight + 10) ?
+					(offset.top + $word.outerHeight() + this.elements.$suggestBox.outerHeight() > viewportHeight + 10) ?
 					(offset.top - (this.elements.$suggestBox.height()+5)) + "px" : 
-					(offset.top + $domObj.outerHeight() + "px"),
+					(offset.top + $word.outerHeight() + "px"),
 				width : "auto",
 				left :	(this.elements.$suggestBox.outerWidth() + offset.left > $("body").width() ? 
-					(offset.left - this.elements.$suggestBox.width()) + $domObj.outerWidth()+"px" : 
+					(offset.left - this.elements.$suggestBox.width()) + $word.outerWidth()+"px" : 
 					offset.left+"px")
 			});
 		},
@@ -189,23 +192,23 @@
 		},
 	
 		// replace incorrectly spelt word with suggestion
-		replace : function(domObj, replace) {
+		replace : function(replace) {
 			this.hideBox();
 			switch(this.type) {
-				case "textarea": this.replaceTextbox(domObj, replace); break;
-				case "html" : this.replaceHtml(domObj, replace); break;
+				case "textarea": this.replaceTextbox(replace); break;
+				case "html" : this.replaceHtml(replace); break;
 			}
 		},
 
 		// replace word in a textarea
-		replaceTextbox : function(domObj, replace){
-			this.removeBadword($(domObj));
-			$(this.domObj).val($(this.domObj).val().replace(new RegExp("\\b"+domObj.innerHTML+"\\b", "ig"), replace.innerHTML));
+		replaceTextbox : function(replace){
+			this.removeBadword(this.$curWord);
+			this.$domObj.val(this.$domObj.val().replace(new RegExp("\\b"+this.$curWord.text()+"\\b", "ig"), replace));
 		},
 
 		// replace word in an HTML container that is not a form field
-		replaceHtml : function(domObj, replace){
-			$(domObj).after(replace.innerHTML).remove();
+		replaceHtml : function(replace){
+			this.$curWord.after(replace).remove();
 		},
 		
 		// remove spelling formatting from word to ignore in original element
@@ -225,8 +228,8 @@
 			if (this.type == "textarea") {
 				this.removeBadword(this.$curWord);
 			} else {
-				$(".spellcheck-word-highlight", self.domObj).each(function(){
-					(new RegExp(self.$curWord.html(), "i").test(this.innerHTML)) && $(this).after(this.innerHTML).remove(); // remove anchor
+				$(".spellcheck-word-highlight", this.$domObj).each(function(){
+					(new RegExp(self.$curWord.text(), "i").test(this.innerHTML)) && $(this).after(this.innerHTML).remove(); // remove anchor
 				});
 			}
 		},
@@ -246,7 +249,7 @@
 			var self= this;
 			this.hideBox(function(){
 				confirm("Are you sure you want to add the word \""+self.$curWord.text()+"\" to the dictionary?") &&
-				this.postJson(self.options.url, {addtodictionary: self.$curWord.text()}, function(){
+				self.postJson(self.options.url, {addtodictionary: self.$curWord.text()}, function(){
 					self.ignoreAll();
 					self.check();
 				});			
@@ -261,6 +264,7 @@
 			$("#spellcheck-badwords").remove();
 			$(this.domObj).removeClass("spellcheck-container");
 			this.elements.$suggestBox.remove();
+			$(this.domObj).data('spellchecker', null);
 		},
 		
 		// sends post request, return JSON object
