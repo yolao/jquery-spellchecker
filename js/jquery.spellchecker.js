@@ -206,9 +206,9 @@
 			this.$domObj.val(this.$domObj.val().replace(new RegExp("\\b"+this.$curWord.text()+"\\b", "ig"), replace));
 		},
 
-		// replace word in an HTML container that is not a form field
+		// replace word in an HTML container
 		replaceHtml : function(replace){
-			this.$curWord.after(replace).remove();
+			$('.spellcheck-word-highlight:contains('+this.$curWord.text()+')', this.$domObj).after(replace).remove();
 		},
 		
 		// remove spelling formatting from word to ignore in original element
