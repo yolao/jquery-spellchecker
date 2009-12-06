@@ -108,19 +108,14 @@
 						callback(1);
 						return;
 					}
-					var replace = "", html = $(self.domObj).html();
+					var html = $(self.domObj).html();
 					// highlight bad words
-					for(var badword in json) {
-						var replaceWord = json[badword];
-						// we only want unique word replacements
-						if (!new RegExp(replaceWord, "i").test(replace)) {
-							replace += replaceWord;
-							html = html.replace(
-								new RegExp("\\b("+replaceWord+")\\b", "ig"),
-								'<span class=\"spellcheck-word-highlight\">$1</span>'
-							);
-						}
-					}							
+					$.each(json, function(key, replaceWord){
+						html = html.replace(
+							new RegExp("\\b("+replaceWord+")\\b", "ig"),
+							'<span class=\"spellcheck-word-highlight\">$1</span>'
+						);
+					});			
 					$(self.domObj).html(html);
 					$(".spellcheck-word-highlight", self.domObj).click(function(){
 						self.suggest(this);
@@ -141,7 +136,7 @@
 			this.elements.$suggestBox
 			.css({
 				width : "auto",
-				left : offset.left+"px",
+				left : offset.left + "px",
 				top : 
 					(this.options.suggestBoxPosition == "top" ?
 					(offset.top - ($domObj.outerHeight() + 10)) + "px" :
@@ -151,34 +146,34 @@
 			this.getJsonData(this.options.url, {suggest: $.trim($domObj.text()), lang: this.options.lang}, function(json){
 
 				self.elements.$suggestFoot.show();
-				self.elements.$suggestWords.html("");
+				self.elements.$suggestWords.empty();
 
 				// build suggest word list
-				for(var i=0;i<(json.length < 5 ? json.length : 5);i++) {
-					var $replaceWord = $("<a></a>")
-						.attr({href: "#"})
-						.addClass((!i?'first':''))
+				for(var i=0; i < (json.length < 5 ? json.length : 5); i++) {
+					self.elements.$suggestWords.append(
+						$('<a href="#">'+json[i]+'</a>').addClass((!i?'first':''))
 						.click(function(e){
 							e.preventDefault();
 							self.replace(domObj, this);
 						})
-						.text(json[i]);
-					self.elements.$suggestWords.append($replaceWord);
+					);
 				}								
 
-				// no suggestions
+				// no word suggestions
 				(!i) && self.elements.$suggestWords.append('<em>(no suggestions)</em>');
+
+				// get browser viewport height
+				var viewportHeight = window.innrHeight ? window.innerHeight : $(window).height();
 							
-				// show the suggest box
+				// position the suggest box
 				self.elements.$suggestBox
 				.css({
-					top : 
-						(self.options.suggestBoxPosition == "top" ?
+					top :	(self.options.suggestBoxPosition == "top") ||
+						(offset.top + $domObj.outerHeight() + self.elements.$suggestBox.outerHeight() > viewportHeight + 10) ?
 						(offset.top - (self.elements.$suggestBox.height()+5)) + "px" : 
-						(offset.top + $domObj.outerHeight()) + "px"),
+						(offset.top + $domObj.outerHeight() + "px"),
 					width : "auto",
-					left : 
-						(self.elements.$suggestBox.outerWidth() + offset.left > $("body").width() ? 
+					left :	(self.elements.$suggestBox.outerWidth() + offset.left > $("body").width() ? 
 						(offset.left - self.elements.$suggestBox.width()) + $domObj.outerWidth()+"px" : 
 						offset.left+"px")
 				});
@@ -302,32 +297,25 @@
 		createElements : function(){
 			var self = this;
 			this.elements.$suggestWords = 
-				$("<div></div>")
-				.addClass("spellcheck-suggestbox-words");
+				$('<div></div>').addClass("spellcheck-suggestbox-words");
 			this.elements.$ignoreWord = 
-				$("<a></a>")
-				.attr({ title: "ignore word", href: "#" })
+				$('<a href="#">Ignore Word</a>')
 				.click(function(e){
 					e.preventDefault();
 					self.ignore();
-				})
-				.text("Ignore word");
+				});
 			this.elements.$ignoreAllWords = 
-				$("<a></a>")
-				.attr({ title: "ignore all words", href: "#"})
+				$('<a href="#">Ignore all</a>')
 				.click(function(e){
 					e.preventDefault();
 					self.ignoreAll();
-				})
-				.text("Ignore all");
+				});
 			this.elements.$ignoreWordsForever = 
-				$("<a></a>")
-				.attr({title: "ignore word forever (add to dictionary)", href: "#"})
+				$('<a href="#" title="ignore word forever (add to dictionary)">Ignore forever</a>')
 				.click(function(e){
 					e.preventDefault();
 					self.addToDictionary();
-				})
-				.text("Ignore forever");
+				});
 			this.elements.$suggestFoot = 
 				$("<div></div>")
 				.addClass("spellcheck-suggestbox-foot")
