@@ -28,14 +28,15 @@
 
 	var SpellChecker = function(domObj, options) {
 		this.options = $.extend({
-			rpc: "checkspelling.php",
-			lang: "en", 
+			url: "checkspelling.php",	// default spellcheck url
+			lang: "en",			// default language 
 			engine: "pspell",		// pspell or google
-			after: domObj,			// after which element to insert the bad words list into dom, can be use selector
-			append: "",			// optional, will default to this if value is given, can be selector
+			wordlist: {
+				action: "after",	// method of inserting wordlist into dom
+				element: domObj		// which object to apply abover method
+			},
 			suggestBoxPosition: "bottom"	// default position of suggest box; top or bottom
 		}, options || {});
-		this.options.url = this.options.rpc+"?engine="+this.options.engine;
 		this.$domObj = $(domObj);
 		this.elements = {};
 		this.init();
@@ -105,11 +106,11 @@
 
 			var self = this, words = [];
 
+			// insert badwords list into dom
 			if (!$("#spellcheck-badwords").length) {
-				(this.options.append) &&
-				$(this.options.append).append(this.elements.$badwords.empty()) ||
-				$(this.options.after).after(this.elements.$badwords.empty());
+				$(this.options.wordlist.element)[this.options.wordlist.action](this.elements.$badwords.empty());
 			}
+			// append incorrectly spelt words
 			$.each(json, function(key, badword) {
 				if ($.inArray(badword, words) === -1) {
 					$('<span class="spellcheck-word-highlight">'+badword+'</span>')
@@ -272,7 +273,7 @@
 			var xhr = $.ajax({
 				type : "POST",
 				url : url,
-				data : data,
+				data : $.extend(data, {engine: this.options.engine}),
 				dataType : "json",
 				cache : false,
 				error : function(XHR, status, error) {

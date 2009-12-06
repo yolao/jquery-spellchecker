@@ -161,11 +161,11 @@ function miuSpellchecker(markitup, lang){
         } else {
                 $(markitup.textarea)
                 .spellchecker({
-                        engine: "pspell",
-                        rpc: markitup.root+"utils/spellchecker/checkspelling.php",
-			lang: lang,
-                        after: ".markItUpFooter",
-			suggestBoxPosition: "top"
+			engine: "pspell",
+                	url: markitup.root+"utils/spellchecker/checkspelling.php",
+                        wordlist: {action: "after", element: ".markItUpFooter"},
+                        lang: lang,
+                        suggestBoxPosition: "top"
                 })
                 .spellchecker("check", function(result){
                         if (result) {
