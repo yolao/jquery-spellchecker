@@ -15,6 +15,9 @@
 	// initiate the tabs
 	$("#tabs").tabs();
 
+	// initiate pretty print syntax highlighter
+	prettyPrint();
+
 	// accordian links toggle
 	$("a.accordian").each(function(){
 		$(this).click(function(e){

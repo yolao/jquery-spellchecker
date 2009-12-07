@@ -62,6 +62,9 @@
 							(Uncompressed &amp; commented)
 						</li>
 						<li>
+							<a href="http://code.google.com/p/jquery-spellchecker/source/browse/trunk/css/spellchecker.css">spellchecker.css</a>
+						</li>
+						<li>
 							<a href="http://code.google.com/p/jquery-spellchecker/source/browse/trunk/checkspelling.php">checkspelling.php</a>
 						</li>
 					</ul>
@@ -102,6 +105,7 @@
 				<ul>
 					<li><a href="#html-example">HTML Example</a></li>
 					<li><a href="#textarea-example">Textarea Example</a></li>
+					<li><a href="#usage">Usage</a></li>
 				</ul>
 				<div id="html-example">
 					<div id="content">
@@ -156,6 +160,31 @@
 						Check Spelling
 					</a>&nbsp;
 					<span class="loading hidden">&nbsp;</span>
+				</div>
+				<div id="usage" class="ui-tabs-hide">
+			
+					<p>
+						Include the following in the head section of your html document:
+					</p>
+<pre class="prettyprint">
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; media=&quot;screen&quot; href=&quot;css/spellchecker.css&quot; /&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;js/jquery.spellchecker.js&quot;&gt;&lt;/script&gt;
+</pre>
+					<p>
+						Defaut usage:
+					</p>
+<pre class="prettyprint">
+// initiate the spell checker on an element, then fire off the 'check' function
+$("textarea#text-content")
+.spellchecker({
+        lang: "en",
+        engine: "google"
+})
+.spellchecker("check");
+</pre>
+					<p>
+						View the <a href="http://code.google.com/p/jquery-spellchecker/wiki/Documentation">documentation</a> for more usage examples.
+					</p>
 				</div>
 			</div>
 	
