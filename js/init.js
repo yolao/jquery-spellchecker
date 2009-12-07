@@ -54,7 +54,10 @@
 	$("#check-textarea").click(function(e){
 		e.preventDefault();
 		$(".loading").show();
-
+		
+		if ($("#spellcheck-badwords").length) {
+			$("#text-content").spellchecker("remove");
+		}
 		$("#text-content")
 		.spellchecker({
 			engine: $("#textarea-service").val(),

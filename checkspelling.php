@@ -39,12 +39,12 @@ class Spelling {
 		
 		// return suggestions
 		if (isset($suggest)) {
-			exit(json_encode(pspell_suggest($pspell_link, $suggest)));	
+			exit(json_encode(pspell_suggest($pspell_link, urldecode($suggest))));	
 		} 
 		// return badly spelt words
 		elseif (isset($text)) {
 			$words = array();
-			foreach($text = explode(' ', $text) as $word) {
+			foreach($text = explode(' ', urldecode($text)) as $word) {
 				if (!pspell_check($pspell_link, $word) and !in_array($word, $words)) {
 					$words[] = utf8_encode(html_entity_decode($word));
 				}
@@ -108,7 +108,6 @@ class Spelling {
 		$header .= "Content-transfer-encoding: text \r\n";
 		$header .= "Request-number: 1 \r\n";
 		$header .= "Document-type: Request \r\n";
-		$header .= "Interface-Version: Test 1.4 \r\n";
 		$header .= "Connection: close \r\n\r\n";
 		$header .= $xml;
 
@@ -125,28 +124,14 @@ class Spelling {
 			$xml_response = curl_exec($ch);
 			curl_close($ch);
 		} else {
-			// use raw sockets
-			$fp = @fsockopen('ssl://'.$server, $port, $errno, $errstr, 30) or die("Unable to contact spellcheck server: {$server} on port: {$port}");
-			if ($fp) {
-				// send request
-				fwrite($fp, $header);
-
-				// read response
-				$xml_response = '';
-				while (!feof($fp)) {
-					$xml_response .= @fgets($fp, 128);
-				}
-				fclose($fp);
-			} else {
-				die('Could not open SSL connection to google.');
-			}
+			exit;
 		}
 
 		// grab and parse content, remove google XML formatting
 		$matches = array();
 		preg_match_all('/<c o="([^"]*)" l="([^"]*)" s="([^"]*)">([^<]*)<\/c>/', $xml_response, $matches, PREG_SET_ORDER);
 
-		// note: google will return encoded data, so no need to encode ut8 characters!
+		// note: google will return encoded data, no need to encode ut8 characters
 		return $matches;
 	}
 	
