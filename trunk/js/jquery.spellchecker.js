@@ -68,7 +68,10 @@
 					.replace(new RegExp(tagExp, "g"), "")	// strip html tags
 					.replace(new RegExp(puncExp, "g"), " ") // strip punctuation
 				);
-				this.postJson(this.options.url, {text: text, lang: this.options.lang}, function(json){
+				this.postJson(this.options.url, {
+					text: encodeURIComponent(text).replace(/%20/g, "+"), 
+					lang: this.options.lang
+				}, function(json){
 					self.buildBadwordsBox(json, callback);
 				});
 			} else {
@@ -77,7 +80,10 @@
 					this.$domObj.text()
 					.replace(new RegExp(puncExp, "g"), " ") // strip punctuation
 				);
-				this.postJson(this.options.url, {text: text, lang: this.options.lang}, function(json){
+				this.postJson(this.options.url, {
+					text: encodeURIComponent(text).replace(/%20/g, "+"),
+					lang: this.options.lang
+				}, function(json){
 					self.highlightWords(json, callback);
 				});
 			}
@@ -108,8 +114,10 @@
 
 			// insert badwords list into dom
 			if (!$("#spellcheck-badwords").length) {
-				$(this.options.wordlist.element)[this.options.wordlist.action](this.elements.$badwords.empty());
+				$(this.options.wordlist.element)[this.options.wordlist.action](this.elements.$badwords);
 			}
+			// empty the badwords container
+			this.elements.$badwords.empty()
 			// append incorrectly spelt words
 			$.each(json, function(key, badword) {
 				if ($.inArray(badword, words) === -1) {
@@ -142,7 +150,10 @@
 					(offset.top + $word.outerHeight()) + "px")
 			}).fadeIn(200);		
 
-			this.postJson(this.options.url, {suggest: $.trim($word.text()), lang: this.options.lang}, function(json){
+			this.postJson(this.options.url, {
+				suggest: encodeURIComponent($.trim($word.text())), 
+				lang: this.options.lang
+			}, function(json){
 				self.buildSuggestBox(json, offset);
 			});
 		},
@@ -169,7 +180,7 @@
 			(!i) && this.elements.$suggestWords.append('<em>(no suggestions)</em>');
 
 			// get browser viewport height
-			var viewportHeight = window.innrHeight ? window.innerHeight : $(window).height();
+			var viewportHeight = window.innerHeight ? window.innerHeight : $(window).height();
 						
 			// position the suggest box
 			self.elements.$suggestBox
@@ -317,7 +328,7 @@
 				.append(this.options.engine == "pspell" ? this.elements.$ignoreWordsForever : false);
 			this.elements.$badwords = 
 				$('<div id="spellcheck-badwords"></div>');
-			this.elements.$suggestBox = 
+			this.elements.$suggestBox = this.elements.$suggestBox ||  
 				$("<div></div>")
 				.addClass("spellcheck-suggestbox")
 				.append(this.elements.$suggestWords)
