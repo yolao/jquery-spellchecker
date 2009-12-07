@@ -74,7 +74,11 @@ class Spelling {
 			$words = array();
 			foreach($matches = $this->getGoogleMatches(stripslashes($text)) as $word) {
 				// position & length of badly spelt word
-				$words[] = substr($text, $word[1], $word[2]);
+				$word = substr($text, $word[1], $word[2]);
+				if (!in_array($word, $words)){
+					$words[] = $word;
+				}
+
 			}
 			exit(json_encode($words));
 		}
