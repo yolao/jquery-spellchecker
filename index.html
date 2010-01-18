@@ -166,14 +166,15 @@
 					<p>
 						Include the following in the head section of your html document:
 					</p>
-<pre class="prettyprint">
+<pre class="prettyprint lang-html">
 &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; media=&quot;screen&quot; href=&quot;css/spellchecker.css&quot; /&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js&quot;&gt;&lt;/script&gt;
 &lt;script type=&quot;text/javascript&quot; src=&quot;js/jquery.spellchecker.js&quot;&gt;&lt;/script&gt;
 </pre>
 					<p>
 						Defaut usage:
 					</p>
-<pre class="prettyprint">
+<pre class="prettyprint lang-javascript">
 // initiate the spell checker on an element, then fire off the 'check' function
 $("textarea#text-content")
 .spellchecker({
@@ -196,5 +197,15 @@ $("textarea#text-content")
 	<script type="text/javascript" src="js/ui.selectmenu.js"></script>
 	<script type="text/javascript" src="js/prettify.js"></script>
 	<script type="text/javascript" src="js/init.js"></script>
+	<script type="text/javascript">
+		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+		document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+		try {
+			var pageTracker = _gat._getTracker("UA-1636725-20");
+			pageTracker._trackPageview();
+		} catch(err) {}
+	</script>
 </body>
 </html>
