@@ -56,7 +56,12 @@
 			e.preventDefault();
 			$(".loading").show();
 
-			$("#text-content").spellchecker("check", function(result){
+			$("#text-content")
+			.spellchecker({
+				lang: "en",
+				engine: "google"
+			})
+			.spellchecker("check", function(result){
 
 				// spell checker has finished checking words
 				$(".loading").hide();
@@ -68,7 +73,5 @@
 		});
 
 	</script>
-</body>
-</html>
 </body>
 </html>
