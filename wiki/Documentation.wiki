@@ -9,8 +9,10 @@ The plugin has 2 default behaviours:
 *Server script*
 
 The plugin comes with an example PHP script that supports two type of spell checking engines: php's pspell extension for aspell, or google's spell checking services. If you are able to use pspell, you will have greater control over your dictionary (with the ability to manage your dictionary words). 
-- using pspell requires you to have aspell installed on the server
-- using google requires minimal server adjustments, should work on most default PHP installations. *Please note* - the example PHP file uses the json_encode function, which requires the json package. This package comes default with PHP 5 >= 5.2.0. If you have an older version of PHP, you can install this package via PECL, or use a custom json class.
+
+ * using pspell requires you to have aspell installed on the server
+ * using google requires minimal server adjustments, should work on most default PHP installations. 
+ * *Please note* - the example PHP file uses the json_encode function, which requires the json package. This package comes default with PHP 5 >= 5.2.0. If you have an older version of PHP, you can install this package via PECL, or use a custom json class.
 
 If you would like to use a different server side language, then here outlines the expected server responses:
 
