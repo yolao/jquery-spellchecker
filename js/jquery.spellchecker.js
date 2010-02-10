@@ -89,7 +89,6 @@
 			var self = this, html = this.$domObj.html();
 
 			$.each(json, function(key, replaceWord){
-				console.log(decodeURIComponent(replaceWord));
 				html = html.replace(
 					new RegExp("([^a-zA-Z\\u00A1-\\uFFFF])("+replaceWord+")([^a-zA-Z\\u00A1-\\uFFFF])", "g"),
 					'$1<span class=\"spellcheck-word-highlight\">$2</span>$3'
