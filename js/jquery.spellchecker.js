@@ -86,8 +86,6 @@
 		highlightWords : function(json, callback) {
 			if (!json.length) { callback(true); return; }
 
-			alert('test');
-
 			var self = this, html = this.$domObj.html();
 
 			$.each(json, function(key, replaceWord){
