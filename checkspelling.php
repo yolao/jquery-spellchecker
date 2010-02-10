@@ -46,7 +46,7 @@ class Spelling {
 			$words = array();
 			foreach($text = explode(' ', urldecode($text)) as $word) {
 				if (!pspell_check($pspell_link, $word) and !in_array($word, $words)) {
-					$words[] = html_entity_decode($word);
+					$words[] = $word;
 				}
 			}
 			exit(json_encode($words));
@@ -72,7 +72,7 @@ class Spelling {
 		// return badly spelt words from a chunk of text	
 		if (isset($text)) {
 			$words = array();
-			foreach($matches = $this->getGoogleMatches(stripslashes($text)) as $word) {
+			foreach($matches = $this->getGoogleMatches($text) as $word) {
 				// position & length of badly spelt word
 				$word = substr($text, $word[1], $word[2]);
 				if (!in_array($word, $words)){
@@ -107,9 +107,8 @@ class Spelling {
 		// setup headers to be sent
 		$header  = "POST {$path} HTTP/1.0 \r\n";
 		$header .= "MIME-Version: 1.0 \r\n";
-		$header .= "Content-type: application/PTI26 \r\n";
+		$header .= "Content-type: text/xml; charset=utf-8 \r\n";
 		$header .= "Content-length: ".strlen($xml)." \r\n";
-		$header .= "Content-transfer-encoding: text \r\n";
 		$header .= "Request-number: 1 \r\n";
 		$header .= "Document-type: Request \r\n";
 		$header .= "Connection: close \r\n\r\n";

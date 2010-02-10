@@ -59,7 +59,7 @@
 
 			var self = this, node = this.$domObj.get(0).nodeName, 
 			tagExp = '<[^>]+>', 
-			puncExp = '^[^a-zA-Z0-9_\\u00A1-\\uFFFF]|[^a-zA-Z0-9_\\u00A1-\\uFFFF]+[^a-zA-Z0-9_\\u00A1-\\uFFFF]|[^a-zA-Z0-9_\\u00A1-\\uFFFF]$|\\n|\\t|\\s{2,}';
+			puncExp = '^[^a-zA-Z\\u00A1-\\uFFFF]|[^a-zA-Z\\u00A1-\\uFFFF]+[^a-zA-Z\\u00A1-\\uFFFF]|[^a-zA-Z\\u00A1-\\uFFFF]$|\\n|\\t|\\s{2,}';
 		
 			if (node == "TEXTAREA" || node == "INPUT") {
 				this.type = 'textarea';
@@ -68,25 +68,19 @@
 					.replace(new RegExp(tagExp, "g"), "")	// strip html tags
 					.replace(new RegExp(puncExp, "g"), " ") // strip punctuation
 				);
-				this.postJson(this.options.url, {
-					text: encodeURIComponent(text).replace(/%20/g, "+"), 
-					lang: this.options.lang
-				}, function(json){
-					self.buildBadwordsBox(json, callback);
-				});
 			} else {
 				this.type = 'html';
 				var text = $.trim(
 					this.$domObj.text()
 					.replace(new RegExp(puncExp, "g"), " ") // strip punctuation
 				);
-				this.postJson(this.options.url, {
-					text: encodeURIComponent(text).replace(/%20/g, "+"),
-					lang: this.options.lang
-				}, function(json){
-					self.highlightWords(json, callback);
-				});
 			}
+			this.postJson(this.options.url, {
+				text: encodeURIComponent(text).replace(/%20/g, "+"),
+				lang: this.options.lang
+			}, function(json){
+				self.highlightWords(json, callback);
+			});
 		},
 
 		highlightWords : function(json, callback) {
@@ -95,9 +89,10 @@
 			var self = this, html = this.$domObj.html();
 
 			$.each(json, function(key, replaceWord){
+				console.log(decodeURIComponent(replaceWord));
 				html = html.replace(
-					new RegExp("\\b("+replaceWord+")\\b", "g"),
-					'<span class=\"spellcheck-word-highlight\">$1</span>'
+					new RegExp("([^a-zA-Z\\u00A1-\\uFFFF])("+replaceWord+")([^a-zA-Z\\u00A1-\\uFFFF])", "g"),
+					'$1<span class=\"spellcheck-word-highlight\">$2</span>$3'
 				);
 			});
 			this.$domObj.html(html);
