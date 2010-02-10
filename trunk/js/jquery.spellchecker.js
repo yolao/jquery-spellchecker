@@ -79,12 +79,14 @@
 				text: encodeURIComponent(text).replace(/%20/g, "+"),
 				lang: this.options.lang
 			}, function(json){
-				self.highlightWords(json, callback);
+				this.type == 'html' ? self.highlightWords(json, callback) : self.buildBadwordsBox(json, callback); 
 			});
 		},
 
 		highlightWords : function(json, callback) {
 			if (!json.length) { callback(true); return; }
+
+			alert('test');
 
 			var self = this, html = this.$domObj.html();
 
