@@ -1,4 +1,4 @@
-.spellcheck-suggestbox {
+#spellcheck-suggestbox {
 	position: absolute;
 	display: none;
 	z-index: 9999;
@@ -7,7 +7,7 @@
 	background: transparent url(../img/spellchecker/shadow.png) no-repeat scroll right bottom;
 	font: normal 13px arial;
 }
-.spellcheck-suggestbox em {
+#spellcheck-suggestbox em {
 	border-top: 1px solid #ccc;
 	border-left: 1px solid #bbb;
 	border-right: 1px solid #bbb;
@@ -18,7 +18,7 @@
 	color: #333;
 	font-style: italic;
 }
-.spellcheck-suggestbox a, .spellcheck-suggestbox a:visited {
+#spellcheck-suggestbox a, #spellcheck-suggestbox a:visited {
 	border-left: 1px solid #bbb;
 	border-right: 1px solid #bbb;
 	padding: 3px 6px 3px 6px;
@@ -28,21 +28,21 @@
 	color: #333;
 	outline: none;
 }
-.spellcheck-suggestbox a.first, .spellcheck-suggestbox a.first:visited {
+#spellcheck-suggestbox a.first, #spellcheck-suggestbox a.first:visited {
 	border-top: 1px solid #ccc;
 }
-.spellcheck-suggestbox a:hover {
+#spellcheck-suggestbox a:hover {
 	color: #000;
 	background: #ddd;
 }
-.spellcheck-suggestbox-words {
+#spellcheck-suggestbox-words {
 	background: #fff;
 }
-.spellcheck-suggestbox-foot {
+#spellcheck-suggestbox-foot {
 	border-top: 1px solid #ddd;
 	background: #fff;
 }
-.spellcheck-suggestbox-foot a, .spellcheck-suggestbox-foot a:visited {
+#spellcheck-suggestbox-foot a, #spellcheck-suggestbox-foot a:visited {
 	outline: none;
 } 
 .spellcheck-word-highlight {

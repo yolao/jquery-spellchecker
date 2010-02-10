@@ -48,7 +48,7 @@
 			this.$domObj.addClass("spellcheck-container");
 			// hide the suggest box on document click
 			$(document).bind("click", function(e){
-				if (!$(e.target).hasClass(".spellcheck-word-highlight") && !$(e.target).parents().filter(".spellcheck-suggestbox").length) {
+				if (!$(e.target).hasClass(".spellcheck-word-highlight") && !$(e.target).parents().filter("#spellcheck-suggestbox").length) {
 					self.hideBox();
 				}
 			});
@@ -109,6 +109,8 @@
 			// insert badwords list into dom
 			if (!$("#spellcheck-badwords").length) {
 				$(this.options.wordlist.element)[this.options.wordlist.action](this.elements.$badwords);
+			} else {
+				this.elements.$badwords = $("#spellcheck-badwords");
 			}
 			// empty the badwords container
 			this.elements.$badwords.empty()
@@ -294,8 +296,8 @@
 		// creates the suggestbox and stores the elements in an array for later use
 		createElements : function(){
 			var self = this;
-			this.elements.$suggestWords = 
-				$('<div></div>').addClass("spellcheck-suggestbox-words");
+			this.elements.$suggestWords = $("#spellcheck-suggestbox-words").length ? $("#spellcheck-suggestbox-words") :
+				$('<div id ="spellcheck-suggestbox-words"></div>')
 			this.elements.$ignoreWord = 
 				$('<a href="#">Ignore Word</a>')
 				.click(function(e){
@@ -315,16 +317,14 @@
 					self.addToDictionary();
 				});
 			this.elements.$suggestFoot = 
-				$("<div></div>")
-				.addClass("spellcheck-suggestbox-foot")
+				$('<div id="spellcheck-suggestbox-foot"></div>')
 				.append(this.elements.$ignoreWord)
 				.append(this.elements.$ignoreAllWords)
 				.append(this.options.engine == "pspell" ? this.elements.$ignoreWordsForever : false);
 			this.elements.$badwords = 
 				$('<div id="spellcheck-badwords"></div>');
-			this.elements.$suggestBox = this.elements.$suggestBox ||  
-				$("<div></div>")
-				.addClass("spellcheck-suggestbox")
+			this.elements.$suggestBox = $("#spellcheck-suggestbox").length ? $("#spellcheck-suggestbox") :   
+				$('<div id="spellcheck-suggestbox"></div>')
 				.append(this.elements.$suggestWords)
 				.append(this.elements.$suggestFoot)
 				.prependTo("body");
