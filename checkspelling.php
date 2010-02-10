@@ -31,7 +31,7 @@ class Spelling {
 	private function pspell() {
 		
 		foreach($_REQUEST as $key => $value) {
-			$$key = stripslashes(trim($value));
+			$$key = html_entity_decode(urldecode(stripslashes(trim($value))));
 		}
 
 		// load the dictionary
@@ -46,7 +46,7 @@ class Spelling {
 			$words = array();
 			foreach($text = explode(' ', urldecode($text)) as $word) {
 				if (!pspell_check($pspell_link, $word) and !in_array($word, $words)) {
-					$words[] = utf8_encode(html_entity_decode($word));
+					$words[] = html_entity_decode($word);
 				}
 			}
 			exit(json_encode($words));
@@ -66,7 +66,7 @@ class Spelling {
 	private function google() {
 	
 		foreach($_REQUEST as $key => $value) {
-			$$key = stripslashes(trim($value));
+			$$key = html_entity_decode(urldecode(stripslashes(trim($value))));
 		}
 
 		// return badly spelt words from a chunk of text	

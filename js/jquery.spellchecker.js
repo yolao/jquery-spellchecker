@@ -13,7 +13,6 @@
 	$.fn.extend({
 		
 		spellchecker : function(options, callback){
-
 			return this.each(function(){
 				if ($(this).data('spellchecker') && $(this).data("spellchecker")[options]){
 					$(this).data("spellchecker")[options](callback);
@@ -22,7 +21,6 @@
 					(options && options.constructor == String) && $(this).data("spellchecker")[options](callback);
 				}
 			});
-
 		}
 	});
 
@@ -59,7 +57,9 @@
 		// checks a chunk of text for bad words, then either shows the words below the original element (if texarea) or highlights the bad words
 		check : function(callback){
 
-			var self = this, node = this.$domObj.get(0).nodeName, tagExp = '<[^>]+>', puncExp = '^\\W|[\\W]+\\W|\\W$|\\n|\\t|\\s{2,}';
+			var self = this, node = this.$domObj.get(0).nodeName, 
+			tagExp = '<[^>]+>', 
+			puncExp = '^[^a-zA-Z0-9_\\u00A1-\\uFFFF]|[^a-zA-Z0-9_\\u00A1-\\uFFFF]+[^a-zA-Z0-9_\\u00A1-\\uFFFF]|[^a-zA-Z0-9_\\u00A1-\\uFFFF]$|\\n|\\t|\\s{2,}';
 		
 			if (node == "TEXTAREA" || node == "INPUT") {
 				this.type = 'textarea';
