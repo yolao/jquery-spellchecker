@@ -79,7 +79,7 @@
 				text: encodeURIComponent(text).replace(/%20/g, "+"),
 				lang: this.options.lang
 			}, function(json){
-				this.type == 'html' ? self.highlightWords(json, callback) : self.buildBadwordsBox(json, callback); 
+				self.type == 'html' ? self.highlightWords(json, callback) : self.buildBadwordsBox(json, callback); 
 			});
 		},
 
