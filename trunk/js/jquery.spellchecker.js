@@ -48,7 +48,7 @@
 			this.$domObj.addClass("spellcheck-container");
 			// hide the suggest box on document click
 			$(document).bind("click", function(e){
-				if (!$(e.target).hasClass(".spellcheck-word-highlight") && !$(e.target).parents().filter("#spellcheck-suggestbox").length) {
+				if (!$(e.target).hasClass("spellcheck-word-highlight") && !$(e.target).parents().filter("#spellcheck-suggestbox").length) {
 					self.hideBox();
 				}
 			});
