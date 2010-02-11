@@ -57,6 +57,8 @@ or view the aspell [http://aspell.net/man-html/Supported.html supported language
   * remember to restart apache after you have installed new dictionaries
   * if you having problems getting pspell to work with personal dictionaries, view the php errors!
 
+Aspell also [http://aspell.net/win32/ works on windows]
+
 _Google_
 
 I couldn't find any information as to the languages google supports, but it's probably a lot.
