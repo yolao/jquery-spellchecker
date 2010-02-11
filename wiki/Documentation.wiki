@@ -42,7 +42,7 @@ checkspelling.php?engine=pspell
 
 _Pspell_
 
-Pspell is simply a php wrapper to the excellent [http://aspell.net/ GNU aspell] spell checker. So supporting large range of languages is as easy as installing the relevant aspell language dictionary. These dictionary packs are (i'm guessing here) available in most GNU/Linux distro repositories. In debian/ubuntu, you can install a new dictionary like so:
+[http://php.net/manual/en/book.pspell.php Pspell] is simply a php wrapper to the excellent [http://aspell.net/ GNU aspell] spell checker. So supporting large range of languages is as easy as installing the relevant aspell language dictionary. These dictionary packs are (i'm guessing here) available in most GNU/Linux distro repositories. In debian/ubuntu, you can install a new dictionary like so:
 {{{
 sudo apt-get install aspell-LANG
 }}}
