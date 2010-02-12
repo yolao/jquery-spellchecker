@@ -211,7 +211,22 @@
 		// replace word in a textarea
 		replaceTextbox : function(replace){
 			this.removeBadword(this.$curWord);
-			this.$domObj.val(this.$domObj.val().replace(new RegExp("\\b"+this.$curWord.text()+"\\b", "ig"), replace));
+			this.$domObj.val(
+				this.$domObj.val()
+				.replace(
+					new RegExp("([^a-zA-Z\\u00A1-\\uFFFF])("+this.$curWord.text()+")([^a-zA-Z\\u00A1-\\uFFFF])", "g"),
+					'$1'+replace+'$3'
+				)
+				.replace(
+					new RegExp("^("+this.$curWord.text()+")([^a-zA-Z\\u00A1-\\uFFFF])", "g"),
+					replace+'$2'
+				)
+				.replace(
+					new RegExp("([^a-zA-Z\\u00A1-\\uFFFF])("+this.$curWord.text()+")$", "g"),
+					'$1'+replace
+				)
+			);
+
 		},
 
 		// replace word in an HTML container
