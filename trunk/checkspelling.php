@@ -94,10 +94,8 @@ class Spelling {
 	
 	private function getGoogleMatches($str) {
 		$server = 'www.google.com';
-		$port = 443;
 		$path = '/tbproxy/spell?lang='.$this->lang.'&hl=en';
-		$host = 'www.google.com';
-		$url = 'https://' . $server;
+		$url = 'https://www.google.com';
 
 		// setup XML request
 		$xml = '<?xml version="1.0" encoding="utf-8" ?>';
@@ -108,7 +106,7 @@ class Spelling {
 		$header  = "POST {$path} HTTP/1.0 \r\n";
 		$header .= "MIME-Version: 1.0 \r\n";
 		$header .= "Content-type: text/xml; charset=utf-8 \r\n";
-		$header .= "Content-length: ".strlen($xml)." \r\n";
+		$header .= "Content-length: ".mb_strlen($xml)." \r\n";
 		$header .= "Request-number: 1 \r\n";
 		$header .= "Document-type: Request \r\n";
 		$header .= "Connection: close \r\n\r\n";
