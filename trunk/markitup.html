@@ -203,8 +203,6 @@ function miuSpellchecker(markitup, lang){
 		// if document is viewed via subversion, then re-direct to demo page
 		if (/jquery-spellchecker\.googlecode\.com/.test(window.location.hostname) && /svn/.test(window.location)) {
 			window.location = 'http://spellchecker.jquery.badsyntax.co.uk/markitup.html';
-		} else {
-			alert(window.location.hostname);
 		}
 					
 		$("#tabs").tabs();
