@@ -1,9 +1,15 @@
 /*
- * Filename:	init.js
- * Developer:	Richard Willis
+ * @filename:	init.js
+ * @auth:	richard willis
  */
 
 (function($){
+
+	// if the index.html document is viewed via subversion in google code, then re-direct to demo page
+	if (/jquery-spellchecker\.googlecode\.com/.test(window.location.hostname) && /svn/.test(window.location)) {
+		window.location = 'http://spellchecker.jquery.badsyntax.co.uk/';
+		return false;
+	}
 	
 	// initiate the select menu plugin
 	$('select').selectmenu({
@@ -22,7 +28,7 @@
 	$("a.accordian").each(function(){
 		$(this).click(function(e){
 			e.preventDefault();
-			$("#"+this.href.replace(/[^#]+#/, '')).animate({height:"toggle",opacity:"toggle"}, 560, "jswing");
+			$("#"+this.href.replace(/[^#]+#/, '')).animate({height: "toggle", opacity: "toggle"}, 560, "jswing");
 		});
 	});
 			
@@ -31,7 +37,7 @@
 		e.preventDefault();
 		var self = this;
 		
-		if ($(this).html().match(/^remove/i)) {
+		if (/^remove/.test($(this).html())) {
 			$("#content").spellchecker("remove");
 			$(this).html("Check Spelling");
 		} else {
@@ -65,7 +71,7 @@
 		.spellchecker({
 			engine: $("#textarea-service").val(),
 			lang: $("#textarea-lang").val(),
-			suggestBoxPosition: "top"
+			suggestBoxPosition: "above"
 		})
 		.spellchecker("check", function(result){
 			// spell checker has finished checking words
@@ -77,9 +83,5 @@
 		});
 	});	
 
-	// if the index.html document is viewed via subversion, then re-direct to demo page
-	if (/svn/.test(window.location)) {
-		window.location = 'http://spellchecker.jquery.badsyntax.co.uk/';
-	}
 
 })(jQuery);
