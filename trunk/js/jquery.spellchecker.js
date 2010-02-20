@@ -133,18 +133,19 @@
 
 			var self = this, $word = $(word), offset = $word.offset();
 			this.$curWord = $word;
-		
-			this.elements.$suggestFoot.hide();	
-			this.elements.$suggestWords.html('<em>Loading..</em>');
+	
+			this.elements.$suggestFoot.hide();
 			this.elements.$suggestBox
+			.hide()
 			.css({
-				width : "auto",
-				left : offset.left + "px",
-				top : 
+				width: "auto",
+				left: offset.left + "px",
+				top: 
 					(this.options.suggestBoxPosition == "above" ?
 					(offset.top - ($word.outerHeight() + 10)) + "px" :
 					(offset.top + $word.outerHeight()) + "px")
-			}).fadeIn(200);		
+			}).fadeIn(240);
+			this.elements.$suggestWords.html('<em>Loading..</em>');
 
 			this.postJson(this.options.url, {
 				suggest: encodeURIComponent($.trim($word.text())), 
@@ -158,7 +159,6 @@
 
 			var self = this, $word = this.$curWord;
 
-			this.elements.$suggestFoot.show();
 			this.elements.$suggestWords.empty();
 
 			// build suggest word list
@@ -177,6 +177,8 @@
 
 			// get browser viewport height
 			var viewportHeight = window.innerHeight ? window.innerHeight : $(window).height();
+			
+			this.elements.$suggestFoot.show();
 						
 			// position the suggest box
 			self.elements.$suggestBox
@@ -190,6 +192,7 @@
 					(offset.left - this.elements.$suggestBox.width()) + $word.outerWidth()+"px" : 
 					offset.left+"px")
 			});
+			
 		},
 
 		// hides the suggest box	
