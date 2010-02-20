@@ -30,10 +30,10 @@
 			lang: "en",			// default language 
 			engine: "pspell",		// pspell or google
 			wordlist: {
-				action: "after",	// method of inserting wordlist into dom
-				element: domObj		// which object to apply abover method
+				action: "after",	// which jquery dom insert action
+				element: domObj		// which object to apply above method
 			},
-			suggestBoxPosition: "bottom"	// default position of suggest box; top or bottom
+			suggestBoxPosition: "below"	// position of suggest box; above or below the highlighted word
 		}, options || {});
 		this.$domObj = $(domObj);
 		this.elements = {};
@@ -141,7 +141,7 @@
 				width : "auto",
 				left : offset.left + "px",
 				top : 
-					(this.options.suggestBoxPosition == "top" ?
+					(this.options.suggestBoxPosition == "above" ?
 					(offset.top - ($word.outerHeight() + 10)) + "px" :
 					(offset.top + $word.outerHeight()) + "px")
 			}).fadeIn(200);		
@@ -181,7 +181,7 @@
 			// position the suggest box
 			self.elements.$suggestBox
 			.css({
-				top :	(this.options.suggestBoxPosition == "top") ||
+				top :	(this.options.suggestBoxPosition == "above") ||
 					(offset.top + $word.outerHeight() + this.elements.$suggestBox.outerHeight() > viewportHeight + 10) ?
 					(offset.top - (this.elements.$suggestBox.height()+5)) + "px" : 
 					(offset.top + $word.outerHeight() + "px"),
