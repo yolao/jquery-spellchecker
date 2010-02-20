@@ -144,7 +144,7 @@
 					(this.options.suggestBoxPosition == "above" ?
 					(offset.top - ($word.outerHeight() + 10)) + "px" :
 					(offset.top + $word.outerHeight()) + "px")
-			}).fadeIn(240);
+			}).fadeIn(200);
 			this.elements.$suggestWords.html('<em>Loading..</em>');
 
 			this.postJson(this.options.url, {
