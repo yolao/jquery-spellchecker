@@ -89,8 +89,8 @@ $("textarea#text-content")
         lang: "en",                     // default language 
         engine: "pspell",               // pspell or google
         wordlist: {
-                action: "after",        // which jquery dom insert action
-                element: domObj         // which object to apply above method
+                action: "after",               // which jquery dom insert action
+                element: $("#text-content")    // which object to apply above method
         },      
         suggestBoxPosition: "bottom"    // default position of suggest box; top or bottom
 });
@@ -117,3 +117,5 @@ And to remove all spellchecker html:
 {{{
 $("textarea#text-content").spellchecker("remove");
 }}}
+
+view the [http://spellchecker.jquery.badsyntax.co.uk/example.html demo] to see it action
