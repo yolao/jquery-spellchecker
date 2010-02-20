@@ -1,11 +1,9 @@
 /*
- * 
  * jquery.spellchecker.js - a simple jQuery Spell Checker
  * Copyright (c) 2009 Richard Willis
  * MIT license  : http://www.opensource.org/licenses/mit-license.php
  * Project      : http://jquery-spellchecker.googlecode.com
  * Contact      : willis.rh@gmail.com
- *
  */
 
 (function($){
@@ -48,9 +46,9 @@
 			this.$domObj.addClass("spellcheck-container");
 			// hide the suggest box on document click
 			$(document).bind("click", function(e){
-				if (!$(e.target).hasClass("spellcheck-word-highlight") && !$(e.target).parents().filter("#spellcheck-suggestbox").length) {
-					self.hideBox();
-				}
+				(!$(e.target).hasClass("spellcheck-word-highlight") && 
+				!$(e.target).parents().filter("#spellcheck-suggestbox").length) &&
+				self.hideBox();
 			});
 		},
 
@@ -207,7 +205,7 @@
 			this.hideBox();
 			switch(this.type) {
 				case "textarea": this.replaceTextbox(replace); break;
-				case "html" : this.replaceHtml(replace); break;
+				case "html": this.replaceHtml(replace); break;
 			}
 		},
 
