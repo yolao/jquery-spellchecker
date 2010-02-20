@@ -79,12 +79,21 @@ Include the following in the head section of your html document:
 Defaut usage:
 {{{
 // initiate the spell checker on an element, then fire off the 'check' function
+$("textarea#text-content").spellchecker("check");
+}}}
+Plugin options: (all optional)
+{{{
 $("textarea#text-content")
 .spellchecker({
-        lang: "en",
-        engine: "google"
-})
-.spellchecker("check");
+        url: "checkspelling.php",       // default spellcheck url
+        lang: "en",                     // default language 
+        engine: "pspell",               // pspell or google
+        wordlist: {
+                action: "after",        // which jquery dom insert action
+                element: domObj         // which object to apply above method
+        },      
+        suggestBoxPosition: "bottom"    // default position of suggest box; top or bottom
+});
 }}}
 You only want to execute the above code after an event has occured:
 {{{
