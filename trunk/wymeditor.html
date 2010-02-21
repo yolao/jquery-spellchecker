@@ -153,14 +153,13 @@ Hello world! Herer are somme badly speldt wordss.
 					<pre class="prettyprint">
 $('#wymeditor').wymeditor({
 
-	stylesheet: 'spellchecker.css',
 	postInit: function(wym){
 
 		//construct the button's html
 		var html = "&lt;li class='wym_tools_newbutton'&gt;"
 		+ "&lt;a name='NewButton' href='#'"
 		+ " style='background-image:"
-		+ " url(../wymeditor/skins/default/icons.png)'&gt;"
+		+ " url(/img/spellcheck_icon.png)'&gt;"
 		+ "Do something"
 		+ "&lt;/a&gt;&lt;/li&gt;";
 
@@ -215,14 +214,13 @@ $('#wymeditor').wymeditor({
 
 			$('#wymeditor').wymeditor({
 
-				stylesheet: 'spellchecker.css',
 				postInit: function(wym){
 
 					//construct the button's html
 					var html = "<li class='wym_tools_newbutton'>"
 					+ "<a name='NewButton' href='#'"
 					+ " style='background-image:"
-					+ " url(../wymeditor/skins/default/icons.png)'>"
+					+ " url(/img/spellcheck.png)'>"
 					+ "Do something"
 					+ "</a></li>";
 
