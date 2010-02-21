@@ -26,13 +26,16 @@
 					<a href="/">Main Demo</a>
 				</li>
 				<li class="ui-state-default ui-corner-top">
-					<a href="/example.html">Simple Demo</a>
-				</li>
-				<li class="ui-state-default ui-corner-top">
 					<a href="/markitup.html">MarkitUp Demo</a>
 				</li>
 				<li class="ui-state-default ui-corner-top">
+					<a href="/jhtmlarea.html">jHtmlArea Demo</a>
+				</li>	
+				<li class="ui-state-default ui-corner-top">
 					<a href="/wymeditor.html">WYMeditor Demo</a>
+				</li>
+				<li class="ui-state-default ui-corner-top">
+					<a href="/example.html">Simple Demo</a>
 				</li>
 				<li class="ui-state-default ui-corner-top">
 					<a href="http://jquery-spellchecker.googlecode.com/">Project Page</a>
@@ -70,14 +73,16 @@
 				<div id="source">
 					<ul>
 						<li>
-							<a href="http://code.google.com/p/jquery-spellchecker/source/browse/trunk/js/jquery.spellchecker.js">jquery.spellchecker.js</a> 
-							(Uncompressed &amp; commented)
+							<a href="http://code.google.com/p/jquery-spellchecker/source/checkout">jquery.spellchecker</a> 
 						</li>
+					</ul>
+				</div>
+				
+				<h2><a href="#docs" class="accordian">Documentation</a></h2>
+				<div id="docs">
+					<ul>
 						<li>
-							<a href="http://code.google.com/p/jquery-spellchecker/source/browse/trunk/css/spellchecker.css">spellchecker.css</a>
-						</li>
-						<li>
-							<a href="http://code.google.com/p/jquery-spellchecker/source/browse/trunk/checkspelling.php">checkspelling.php</a>
+							<a href="http://code.google.com/p/jquery-spellchecker/wiki/Documentation">Wiki Documentation</a> 
 						</li>
 					</ul>
 				</div>
@@ -99,13 +104,12 @@
 						<li>
 							<p>
 								Please use the <a href="http://code.google.com/p/jquery-spellchecker/issues/list">issue tracker</a> to log any bugs. Any feedback can be sent to:
-								<img src="img/gmail.png" alt="my email" />
+								<a href="mailto:willis.rh@gmail.com">willis.rh@gmail.com</a>.
 							</p>
 						</li>
 						<li>
 							<p>
-								You can check out the project, including all source code &amp; 
-								repository at <a href="http://jquery-spellchecker.googlecode.com">jquery-spellchecker.googlecode.com</a>
+								Check out the project repository at <a href="http://jquery-spellchecker.googlecode.com">jquery-spellchecker.googlecode.com</a>
 							</p>
 						</li>
 					</ul>
@@ -190,8 +194,8 @@
 // initiate the spell checker on an element, then fire off the 'check' function
 $("textarea#text-content")
 .spellchecker({
-        lang: "en",
-        engine: "google"
+	lang: "en",
+	engine: "google"
 })
 .spellchecker("check");
 </pre>

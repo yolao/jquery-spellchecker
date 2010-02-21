@@ -48,6 +48,7 @@
 #spellcheck-focus-helper {
 	position: absolute;
 	top: -2000px;
+	z-index: 0;
 }
 .spellcheck-word-highlight {
 	color: #d70303;

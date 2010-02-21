@@ -49,8 +49,8 @@ h2 {
 	font-weight: normal;
 }
 h2 a, h2 a:visited {
-	color: #800;
-	text-decoration: none;
+	color: #800 !important;
+	text-decoration: none !important;
 }
 h2 a:hover {
 	color: red;
