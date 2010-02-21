@@ -94,7 +94,6 @@ $("textarea#text-content")
         },      
         suggestBoxPosition: "below",    // position of suggest box; above or below the highlighted word
         innerDocument: false            // if checking an iframe document (like in a wysiwyg), set to true
-highlighted word
 });
 }}}
 You only want to execute the above code after an event has occured:
