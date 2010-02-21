@@ -27,6 +27,7 @@
 			url: "checkspelling.php",	// default spellcheck url
 			lang: "en",			// default language 
 			engine: "pspell",		// pspell or google
+			addToDictionary: false,		// display option to add word to dictionary (pspell only)
 			wordlist: {
 				action: "after",	// which jquery dom insert action
 				element: domObj		// which object to apply above method
@@ -370,7 +371,7 @@
 				$('<div id="spellcheck-suggestbox-foot"></div>')
 				.append(this.elements.$ignoreWord)
 				.append(this.elements.$ignoreAllWords)
-				.append(this.options.engine == "pspell" ? this.elements.$ignoreWordsForever : false);
+				.append(this.options.engine == "pspell" && self.options.addToDictionary ? this.elements.$ignoreWordsForever : false);
 			this.elements.$badwords = 
 				$('<div id="spellcheck-badwords"></div>');
 			this.elements.$suggestBox =    

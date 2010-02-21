@@ -46,7 +46,8 @@
 			$("#content")
 			.spellchecker({
 				engine: $("#service").val(),
-				innerDocument: true
+				innerDocument: true,
+				addToDictionary: false
 			})
 			.spellchecker("check", function(result){
 				$(self).html("Remove Spelling");			
@@ -72,7 +73,8 @@
 		.spellchecker({
 			engine: $("#textarea-service").val(),
 			lang: $("#textarea-lang").val(),
-			suggestBoxPosition: "above"
+			suggestBoxPosition: "above",
+			addToDictionary: false
 		})
 		.spellchecker("check", function(result){
 			// spell checker has finished checking words
