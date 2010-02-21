@@ -12,14 +12,14 @@
 	}
 	
 	// initiate the select menu plugin
-	$('select').selectmenu({
+	($.fn.selectmenu) && $('select').selectmenu({
 		width: 100,
 		menuWidth: 100,
 		style: "dropdown"
 	});
 
 	// initiate the tabs
-	$("#tabs").tabs();
+	($.fn.tabs) && $("#tabs").tabs();
 
 	// initiate pretty print syntax highlighter
 	prettyPrint();

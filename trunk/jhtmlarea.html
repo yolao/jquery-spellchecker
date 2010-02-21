@@ -39,17 +39,20 @@
 					<a href="/">Main Demo</a>
 				</li>
 				<li class="ui-state-default ui-corner-top">
-					<a href="/example.html">Simple Demo</a>
-				</li>
-				<li class="ui-state-default ui-corner-top">
 					<a href="/markitup.html">MarkitUp Demo</a>
 				</li>
 				<li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active">
+					<a href="/jhtmlarea.html">jHtmlArea Demo</a>
+				</li>
+				<li class="ui-state-default ui-corner-top">
 					<a href="/wymeditor.html">WYMeditor Demo</a>
 				</li>
-				 <li class="ui-state-default ui-corner-top">
+				<li class="ui-state-default ui-corner-top">
+					<a href="/example.html">Simple Demo</a>
+				</li>
+				<li class="ui-state-default ui-corner-top">
 					<a href="http://jquery-spellchecker.googlecode.com/">Project page</a>
-				 </li>
+				</li>
 			</ul>
 		</div>
 
@@ -64,17 +67,11 @@
 				<h2><a href="#example-overview" class="accordian open">Overview</a></h2>
 				<div id="example-overview">
 					<p>
-						This page shows how this spellchecker plugin can be used to check the spelling of a WYMeditor editor, using google's spell checking
-						service. The plugin also comes with the option of using <a href="http://php.net/manual/en/book.pspell.php">pspell</a>.
-						If you are able to use pspell, you will have greater control over your dictionary. 
+						This page shows how this spellchecker plugin can be used to check the spelling of a
+						<a href="http://jhtmlarea.codeplex.com/">jHtmlArea editor</a>.
 					</p>
 					<p>
 						Click on the "Check spelling" button on the editor toolbar to see the plugin in action.
-					</p>
-					<p>
-						If you're looking for a bare-bones demo then 
-						take a look at the <a href="example.html">simple demo</a> page. You can find a full featured demo 
-						<a href="http://spellchecker.jquery.badsyntax.co.uk">here</a>.
 					</p>
 				</div>
 				
@@ -82,11 +79,10 @@
 				<div id="source">
 					<ul>
 						<li>
-							<a href="http://code.google.com/p/jquery-spellchecker/source/browse/trunk/js/jquery.spellchecker.js">jquery.spellchecker.js</a> 
-							(Uncompressed &amp; commented)
+							<a href="http://code.google.com/p/jquery-spellchecker/source/checkout">jquery.spellchecker</a> 
 						</li>
 						<li>
-							<a href="http://code.google.com/p/jquery-spellchecker/source/browse/trunk/checkspelling.php">checkspelling.php</a>
+							<a href="http://jhtmlarea.codeplex.com/releases/view/30759">jHtmlArea</a>
 						</li>
 					</ul>
 				</div>
@@ -94,27 +90,14 @@
 				<h2><a href="#info" class="accordian">Info/Contact</a></h2>
 				<div id="info">
 					<ul>
-						<li class="hidden">
-							<p>Tested on all major browsers:</p>
-		
-							<p class="browser-icons">
-								<a class="firefox" title="Firefox 2 &amp; 3" href="http://www.mozilla.com/firefox/">&nbsp;</a>
-								<a class="explorer" title="Explorer 6, 7 &amp; 8" href="http://www.microsoft.com/windows/products/winfamily/ie/">&nbsp;</a>
-								<a class="safari" title="Safari 3" href="http://www.apple.com/safari/">&nbsp;</a>
-								<a class="opera" title="Opera 9" href="http://www.opera.com">&nbsp;</a>
-								<a class="chrome" title="Chrome" href="http://www.google.com/chrome">&nbsp;</a>
-							</p>&nbsp;
-						</li>
 						<li>
 							<p>
-								Please use the <a href="http://code.google.com/p/jquery-spellchecker/issues/list">issue tracker</a> to log any bugs. Any feedback can be sent to:
-								<img src="img/gmail.png" alt="my email" />
+								Please use the <a href="http://code.google.com/p/jquery-spellchecker/issues/list">issue tracker</a> to log any bugs. Feedback can be sent to <a href="mailto:willis.rh@gmail.com">willis.rh@gmail.com</a>.
 							</p>
 						</li>
 						<li>
 							<p>
-								You can check out the project, including all source code &amp; 
-								repository at <a href="http://jquery-spellchecker.googlecode.com">jquery-spellchecker.googlecode.com</a>
+								Check out the project repository at <a href="http://jquery-spellchecker.googlecode.com">jquery-spellchecker.googlecode.com</a>
 							</p>
 						</li>
 					</ul>
@@ -125,76 +108,68 @@
 			<div id="tabs" class="col-l">
 				<ul>
 					<li><a href="#editor-example">Editor</a></li>
-					<li><a href="#wymeditor-example">WYMeditor integration</a></li>
+					<li><a href="#wymeditor-example">jHtmlArea integration</a></li>
 				</ul>
 				<div id="editor-example">
-<textarea id="wymeditor" cols="80" rows="20">
+<textarea id="jhtmlarea" cols="80" rows="20">
 Hello world! Herer are somme badly speldt wordss.
 </textarea>
 				</div>
 				<div id="wymeditor-example" class="ui-tabs-hide" style="font-size:92%;padding-top:1.5em;">
 					<p>
 						Please read the <a href="http://code.google.com/p/jquery-spellchecker/wiki/Documentation">documentation</a> on how to setup the spellchecker first, and then do the following to get
-						the spellchecker integrated into the WYMeditor.
+						the spellchecker integrated into the jHtmlArea editor.
 					</p>
 					<p>
-						Download the neccesary spellchecker files, and check the image paths are correct in the spellchecker.css file.
+						<a href="http://code.google.com/p/jquery-spellchecker/source/checkout">Download</a> the neccesary spellchecker files, and check the image paths are correct in the spellchecker.css file.
 					</p>
 					<p>
-						<a href="http://www.wymeditor.org/download/">Download</a> the WYMeditor source files.
+						<a href="http://jhtmlarea.codeplex.com/releases/view/30759">Download</a> the jHtmlArea source files.
 					</p>
 					<p>
 						Include the following in the head section of your html document:
 					</p>
 <pre class="prettyprint lang-html">
 &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; media=&quot;screen&quot; href=&quot;css/spellchecker.css&quot; /&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; media=&quot;screen&quot; href=&quot;jhtmlarea/style/jHtmlArea.css&quot; /&gt;
 &lt;script type=&quot;text/javascript&quot; src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js&quot;&gt;&lt;/script&gt;
 &lt;script type=&quot;text/javascript&quot; src=&quot;js/jquery.spellchecker.js&quot;&gt;&lt;/script&gt;
-&lt;script type="text/javascript" src="wymeditor/jquery.wymeditor.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="jhtmlarea/scripts/jHtmlArea-0.7.0.js"&gt;&lt;/script&gt;
 </pre>
-					<p>Use the following to instantiate WYMeditor, and add the spellchecker button to the toolbar:</p>
+					<p>Use the following to instantiate jHtmlArea, and add the spellchecker button to the toolbar:</p>
 
 					<pre class="prettyprint">
-$('#wymeditor').wymeditor({
-
-	postInit: function(wym){
-
-		//construct the button's html
-		var html = "&lt;li class='wym_tools_newbutton'&gt;"
-		+ "&lt;a name='NewButton' href='#'"
-		+ " style='background-image:"
-		+ " url(/img/spellcheck_icon.png)'&gt;"
-		+ "Do something"
-		+ "&lt;/a&gt;&lt;/li&gt;";
-
-		//add the button to the tools box
-		$(wym._box)
-		.find(wym._options.toolsSelector + wym._options.toolsListSelector)
-		.append(html);
-
-		//handle click event
-		$(wym._box)
-		.find('li.wym_tools_newbutton a').click(function() {
-
-			// initiate the spellchecker
-			$(wym._doc.body)
-			.spellchecker({
-				url: "checkspelling.php",
-				lang: "en", 
-				engine: "pspell",
-				suggestBoxPosition: "above",
-				innerDocument: false,
-				wordlist: {
-					action: "append",
-					element: $(".wym_area_main")
-				},  
-			})
-			.spellchecker("check");
-		});
-	}
+$("#jhtmlarea").htmlarea({
+	toolbar: [
+		["bold", "italic", "underline"],
+		["p", "h1", "h2", "h3", "h4", "h5", "h6"],
+		["link", "unlink", "|", "image"],			 
+		// custom spellcheck button
+		[{
+			css: "check-spelling-button",
+			text: "Check spelling",
+			action: function(btn) {
+				// initiate the spellchecker
+				$(this.editor.body)
+				.spellchecker({
+					url: "checkspelling.php",
+					lang: "en", 
+					engine: "pspell",
+					suggestBoxPosition: "above",
+					innerDocument: false,
+					wordlist: {
+						action: "after",
+						element: $(".jHtmlArea")
+					},  
+				})
+				.spellchecker("check", function(result){
+					(result) && alert('There are no incorrectly spelt words.');
+				});
+			}
+		}]
+	]
 });
 </pre>
-					<p>That's it!</p>
 				</div>
 			</div>
 	
@@ -205,22 +180,23 @@ $('#wymeditor').wymeditor({
 	<script type="text/javascript" src="js/prettify.js"></script>
 	<script type="text/javascript" src="js/jquery.spellchecker.js"></script>
 	<script type="text/javascript" src="jhtmlarea/scripts/jHtmlArea-0.7.0.js"></script>
+	<script type="text/javascript" src="js/init.js"></script>
 	<script type="text/javascript">
 		//<![CDATA[
 		$(document).ready(function(){
 
 			// if document is viewed via subversion, then re-direct to demo page
 			if (/jquery-spellchecker\.googlecode\.com/.test(window.location.hostname) && /svn/.test(window.location)) {
-				window.location = 'http://spellchecker.jquery.badsyntax.co.uk/markitup.html';
+				window.location = 'http://spellchecker.jquery.badsyntax.co.uk/jhtmlarea.html';
 			}
 						
-			$("#tabs").tabs();
-
-			$("#wymeditor").htmlarea({
+			$("#jhtmlarea").htmlarea({
+				/*css: "/css/spellchecker.css",*/
 				toolbar: [
 					["bold", "italic", "underline"],
 					["p", "h1", "h2", "h3", "h4", "h5", "h6"],
 					["link", "unlink", "|", "image"],			 
+					// custom spellcheck button
 					[{
 						css: "check-spelling-button",
 						text: "Check spelling",
@@ -238,7 +214,9 @@ $('#wymeditor').wymeditor({
 									element: $(".jHtmlArea")
 								},  
 							})
-							.spellchecker("check");
+							.spellchecker("check", function(result){
+								(result) && alert('There are no incorrectly spelt words.');
+							});
 						}
 					}]
 				]

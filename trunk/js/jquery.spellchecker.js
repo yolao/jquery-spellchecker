@@ -127,6 +127,12 @@
 			var self = this, $word = $(word), offset = $word.offset();
 			this.$curWord = $word;
 
+			if (this.options.innerDocument) {
+				this.elements.$suggestBox = this.elements.$body.find("#spellcheck-suggestbox");
+				this.elements.$suggestWords = this.elements.$body.find("#spellcheck-suggestbox-words");
+				this.elements.$suggestFoot = this.elements.$body.find("#spellcheck-suggestbox-foot");
+			}
+
 			this.elements.$suggestFoot.hide();
 			this.elements.$suggestBox
 			.stop().hide()
@@ -161,9 +167,10 @@
 				this.elements.$suggestWords.append(
 					$('<a href="#">'+json[i]+'</a>')
 					.addClass((!i?'first':''))
-					.click(function(e){
+					.mousedown(function(e){
 						e.preventDefault();
 						self.replace(this.innerHTML);
+						self.elements.$focusHelper.trigger("blur");
 					})
 				);
 			}								
@@ -240,6 +247,7 @@
 				$(this.$domObj).html(
 					this.replaceWord($(this.$domObj).html(), replace)
 				);
+				this.removeBadword(this.$curWord);
 			}
 		},
 		
@@ -290,10 +298,12 @@
 		// remove spell check formatting
 		remove : function(destroy) {
 			destroy = destroy || true;
-			$(".spellcheck-word-highlight").each(function(){
+			this.elements.$body.find(".spellcheck-word-highlight").each(function(){
 				$(this).after(this.innerHTML).remove()
 			});
-			$("#spellcheck-badwords, #spellcheck-suggestbox-words, #spellcheck-suggestbox-foot, #spellcheck-suggestbox, #spellcheck-focus-helper").remove();
+			this.elements.$body
+			.find("#spellcheck-badwords, #spellcheck-suggestbox-words, #spellcheck-suggestbox-foot, #spellcheck-suggestbox, #spellcheck-focus-helper")
+			.remove();
 			$(this.domObj).removeClass("spellcheck-container");
 			(destroy) && $(this.domObj).data('spellchecker', null);
 		},
@@ -321,16 +331,18 @@
 
 		// create the spellchecker elements, prepend to body
 		createElements : function(){
-			var self = this, 
-			$body = this.options.innerDocument ? this.$domObj.parents().filter("html:first").find("body") : "body";
+			var self = this;
+
+			this.elements.$body = this.options.innerDocument ? this.$domObj.parents().filter("html:first").find("body") : $("body");
 
 			this.remove(false);
+
 			this.elements.$focusHelper = 
 				$('<input type="text" id="spellcheck-focus-helper" />')
 				.blur(function(){
 					self.hideBox();
 				})
-				.prependTo($body);
+				.prependTo(this.elements.$body);
 			this.elements.$suggestWords =
 				$('<div id ="spellcheck-suggestbox-words"></div>')
 			this.elements.$ignoreWord = 
@@ -338,18 +350,21 @@
 				.click(function(e){
 					e.preventDefault();
 					self.ignore();
+					self.elements.$focusHelper.trigger("blur");
 				});
 			this.elements.$ignoreAllWords = 
 				$('<a href="#">Ignore all</a>')
 				.click(function(e){
 					e.preventDefault();
 					self.ignoreAll();
+					self.elements.$focusHelper.trigger("blur");
 				});
 			this.elements.$ignoreWordsForever = 
 				$('<a href="#" title="ignore word forever (add to dictionary)">Ignore forever</a>')
 				.click(function(e){
 					e.preventDefault();
 					self.addToDictionary();
+					self.elements.$focusHelper.trigger("blur");
 				});
 			this.elements.$suggestFoot =  
 				$('<div id="spellcheck-suggestbox-foot"></div>')
@@ -362,7 +377,7 @@
 				$('<div id="spellcheck-suggestbox"></div>')
 				.append(this.elements.$suggestWords)
 				.append(this.elements.$suggestFoot)
-				.prependTo($body);
+				.prependTo(this.elements.$body);
 		}
 	};	
 
