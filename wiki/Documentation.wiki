@@ -92,7 +92,9 @@ $("textarea#text-content")
                 action: "after",               // which jquery dom insert action
                 element: $("#text-content")    // which object to apply above method
         },      
-        suggestBoxPosition: "below"    // position of suggest box; above or below the highlighted word
+        suggestBoxPosition: "below",    // position of suggest box; above or below the highlighted word
+        innerDocument: false            // if checking an iframe document (like in a wysiwyg), set to true
+highlighted word
 });
 }}}
 You only want to execute the above code after an event has occured:
