@@ -45,12 +45,6 @@
 			var self = this;
 			this.createElements();
 			this.$domObj.addClass("spellcheck-container");
-			// hide the suggest box on document click
-			$(document).bind("click", function(e){
-				(!$(e.target).hasClass("spellcheck-word-highlight") && 
-				!$(e.target).parents().filter("#spellcheck-suggestbox").length) &&
-				self.hideBox();
-			});
 		},
 
 		// checks a chunk of text for bad words, then either shows the words below the original element (if texarea) or highlights the bad words
@@ -75,8 +69,7 @@
 				);
 			}
 			this.postJson(this.options.url, {
-				text: encodeURIComponent(text).replace(/%20/g, "+"),
-				lang: this.options.lang
+				text: encodeURIComponent(text).replace(/%20/g, "+")
 			}, function(json){
 				self.type == 'html' && self.options.innerDocument ? 
 				self.highlightWords(json, callback) : 
@@ -133,11 +126,12 @@
 
 			var self = this, $word = $(word), offset = $word.offset();
 			this.$curWord = $word;
-	
+
 			this.elements.$suggestFoot.hide();
 			this.elements.$suggestBox
-			.hide()
+			.stop().hide()
 			.css({
+				opacity: 1,
 				width: "auto",
 				left: offset.left + "px",
 				top: 
@@ -145,11 +139,12 @@
 					(offset.top - ($word.outerHeight() + 10)) + "px" :
 					(offset.top + $word.outerHeight()) + "px")
 			}).fadeIn(200);
+
+			this.elements.$focusHelper.focus();
 			this.elements.$suggestWords.html('<em>Loading..</em>');
 
 			this.postJson(this.options.url, {
-				suggest: encodeURIComponent($.trim($word.text())), 
-				lang: this.options.lang
+				suggest: encodeURIComponent($.trim($word.text()))
 			}, function(json){
 				self.buildSuggestBox(json, offset);
 			});
@@ -164,7 +159,8 @@
 			// build suggest word list
 			for(var i=0; i < (json.length < 5 ? json.length : 5); i++) {
 				this.elements.$suggestWords.append(
-					$('<a href="#">'+json[i]+'</a>').addClass((!i?'first':''))
+					$('<a href="#">'+json[i]+'</a>')
+					.addClass((!i?'first':''))
 					.click(function(e){
 						e.preventDefault();
 						self.replace(this.innerHTML);
@@ -198,19 +194,19 @@
 		// hides the suggest box	
 		hideBox : function(callback) {
 			this.elements.$suggestBox.fadeOut(250, function(){
-				(callback != undefined) && callback();
+				(callback) && callback();
 			});				
 		},
 	
 		// replace incorrectly spelt word with suggestion
 		replace : function(replace) {
-			this.hideBox();
 			switch(this.type) {
 				case "textarea": this.replaceTextbox(replace); break;
 				case "html": this.replaceHtml(replace); break;
 			}
 		},
 
+		// replaces a word string in a chunk of text
 		replaceWord : function(text, replace){
 			return text
 				.replace(
@@ -233,7 +229,6 @@
 			this.$domObj.val(
 				this.replaceWord(this.$domObj.val(), replace)
 			);
-
 		},
 
 		// replace word in an HTML container
@@ -242,13 +237,14 @@
 			if (words.length) {
 				words.after(replace).remove();
 			} else {
-				$(this.$domObj).html(this.replaceWord($(this.$domObj).get(0).innerHTML, replace));
+				$(this.$domObj).html(
+					this.replaceWord($(this.$domObj).html(), replace)
+				);
 			}
 		},
 		
 		// remove spelling formatting from word to ignore in original element
 		ignore : function() {
-			this.hideBox();
 			if (this.type == "textarea") {
 				this.removeBadword(this.$curWord);
 			} else {
@@ -256,15 +252,15 @@
 			}
 		},
 		
-		// remove seplling formatting from all words to ignore in original element
+		// remove spelling formatting from all words to ignore in original element
 		ignoreAll : function() {
 			var self = this;
-			this.hideBox();
 			if (this.type == "textarea") {
 				this.removeBadword(this.$curWord);
 			} else {
 				$(".spellcheck-word-highlight", this.$domObj).each(function(){
-					(new RegExp(self.$curWord.text(), "i").test(this.innerHTML)) && $(this).after(this.innerHTML).remove(); // remove anchor
+					(new RegExp(self.$curWord.text(), "i").test(this.innerHTML)) && 
+					$(this).after(this.innerHTML).remove(); // remove anchor
 				});
 			}
 		},
@@ -284,7 +280,7 @@
 			var self= this;
 			this.hideBox(function(){
 				confirm("Are you sure you want to add the word \""+self.$curWord.text()+"\" to the dictionary?") &&
-				self.postJson(self.options.url, {addtodictionary: self.$curWord.text()}, function(){
+				self.postJson(self.options.url, { addtodictionary: self.$curWord.text() }, function(){
 					self.ignoreAll();
 					self.check();
 				});			
@@ -297,7 +293,7 @@
 			$(".spellcheck-word-highlight").each(function(){
 				$(this).after(this.innerHTML).remove()
 			});
-			$("#spellcheck-badwords, #spellcheck-suggestbox-words, #spellcheck-suggestbox-foot, #spellcheck-suggestbox").remove();
+			$("#spellcheck-badwords, #spellcheck-suggestbox-words, #spellcheck-suggestbox-foot, #spellcheck-suggestbox, #spellcheck-focus-helper").remove();
 			$(this.domObj).removeClass("spellcheck-container");
 			(destroy) && $(this.domObj).data('spellchecker', null);
 		},
@@ -307,7 +303,10 @@
 			var xhr = $.ajax({
 				type : "POST",
 				url : url,
-				data : $.extend(data, {engine: this.options.engine}),
+				data : $.extend(data, {
+					engine: this.options.engine, 
+					lang: this.options.lang
+				}),
 				dataType : "json",
 				cache : false,
 				error : function(XHR, status, error) {
@@ -320,10 +319,18 @@
 			return xhr;
 		},
 
-		// creates the suggestbox and stores the elements in an array for later use
+		// create the spellchecker elements, prepend to body
 		createElements : function(){
-			var self = this;
+			var self = this, 
+			$body = this.options.innerDocument ? this.$domObj.parents().filter("html:first").find("body") : "body";
+
 			this.remove(false);
+			this.elements.$focusHelper = 
+				$('<input type="text" id="spellcheck-focus-helper" />')
+				.blur(function(){
+					self.hideBox();
+				})
+				.prependTo($body);
 			this.elements.$suggestWords =
 				$('<div id ="spellcheck-suggestbox-words"></div>')
 			this.elements.$ignoreWord = 
@@ -355,13 +362,8 @@
 				$('<div id="spellcheck-suggestbox"></div>')
 				.append(this.elements.$suggestWords)
 				.append(this.elements.$suggestFoot)
-				.prependTo(
-					self.options.innerDocument ?
-					this.$domObj.parents().filter("html:first").find("body") :
-					"body"
-				);
+				.prependTo($body);
 		}
-		
 	};	
 
 })(jQuery);

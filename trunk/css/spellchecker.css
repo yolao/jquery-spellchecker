@@ -45,6 +45,10 @@
 #spellcheck-suggestbox-foot a, #spellcheck-suggestbox-foot a:visited {
 	outline: none;
 } 
+#spellcheck-focus-helper {
+	position: absolute;
+	top: -2000px;
+}
 .spellcheck-word-highlight {
 	color: #d70303;
 	text-decoration: none;
