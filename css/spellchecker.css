@@ -4,7 +4,7 @@
 	z-index: 9999;
 	overflow: none;
 	padding: 0px 9px 9px 0px;
-	background: transparent url(../img/spellchecker/shadow.png) no-repeat scroll right bottom;
+	background: transparent url(../img/spellchecker_shadow.png) no-repeat scroll right bottom;
 	font: normal 13px arial;
 }
 #spellcheck-suggestbox em {
@@ -53,7 +53,7 @@
 .spellcheck-word-highlight {
 	color: #d70303;
 	text-decoration: none;
-	background: url(../img/spellchecker/bg.gif) repeat-x 100% 100%;
+	background: url(../img/spellchecker_bg.gif) repeat-x 100% 100%;
 	cursor: pointer;
 }
 #spellcheck-badwords {
