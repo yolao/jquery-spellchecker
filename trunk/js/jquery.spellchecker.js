@@ -31,7 +31,8 @@
 				action: "after",	// which jquery dom insert action
 				element: domObj		// which object to apply above method
 			},
-			suggestBoxPosition: "below"	// position of suggest box; above or below the highlighted word
+			suggestBoxPosition: "below",	// position of suggest box; above or below the highlighted word
+			innerDocument: false		// if you want the badwords highlighted in the html then set to true
 		}, options || {});
 		this.$domObj = $(domObj);
 		this.elements = {};
@@ -77,7 +78,9 @@
 				text: encodeURIComponent(text).replace(/%20/g, "+"),
 				lang: this.options.lang
 			}, function(json){
-				self.type == 'html' ? self.highlightWords(json, callback) : self.buildBadwordsBox(json, callback); 
+				self.type == 'html' && self.options.innerDocument ? 
+				self.highlightWords(json, callback) : 
+				self.buildBadwordsBox(json, callback); 
 			});
 		},
 
@@ -92,8 +95,7 @@
 					'$1<span class=\"spellcheck-word-highlight\">$2</span>$3'
 				);
 			});
-			this.$domObj.html(html);
-			$(".spellcheck-word-highlight", this.domObj).click(function(){
+			this.$domObj.html(html).find(".spellcheck-word-highlight").click(function(){
 				self.suggest(this);
 			});
 			(callback) && callback();
@@ -209,11 +211,8 @@
 			}
 		},
 
-		// replace word in a textarea
-		replaceTextbox : function(replace){
-			this.removeBadword(this.$curWord);
-			this.$domObj.val(
-				this.$domObj.val()
+		replaceWord : function(text, replace){
+			return text
 				.replace(
 					new RegExp("([^a-zA-Z\\u00A1-\\uFFFF])("+this.$curWord.text()+")([^a-zA-Z\\u00A1-\\uFFFF])", "g"),
 					'$1'+replace+'$3'
@@ -225,14 +224,26 @@
 				.replace(
 					new RegExp("([^a-zA-Z\\u00A1-\\uFFFF])("+this.$curWord.text()+")$", "g"),
 					'$1'+replace
-				)
+				);
+		},
+
+		// replace word in a textarea
+		replaceTextbox : function(replace){
+			this.removeBadword(this.$curWord);
+			this.$domObj.val(
+				this.replaceWord(this.$domObj.val(), replace)
 			);
 
 		},
 
 		// replace word in an HTML container
 		replaceHtml : function(replace){
-			$('.spellcheck-word-highlight:contains('+this.$curWord.text()+')', this.$domObj).after(replace).remove();
+			var words = this.$domObj.find('.spellcheck-word-highlight:contains('+this.$curWord.text()+')')
+			if (words.length) {
+				words.after(replace).remove();
+			} else {
+				$(this.$domObj).html(this.replaceWord($(this.$domObj).get(0).innerHTML, replace));
+			}
 		},
 		
 		// remove spelling formatting from word to ignore in original element
@@ -343,7 +354,11 @@
 				$('<div id="spellcheck-suggestbox"></div>')
 				.append(this.elements.$suggestWords)
 				.append(this.elements.$suggestFoot)
-				.prependTo("body");
+				.prependTo(
+					self.options.innerDocument ?
+					this.$domObj.parents().filter("html:first").find("body") :
+					"body"
+				);
 		}
 		
 	};	

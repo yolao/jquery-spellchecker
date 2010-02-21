@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<title>jQuery Spell Checker demo - markitup integrated</title>
+	<title>jQuery Spell Checker demo - WYMeditor demo</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="Content-Style-Type" content="text/css" />
 	<meta http-equiv="description" content="jQuery spellchecker demo page" />
@@ -10,8 +10,6 @@
 	<link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/prettify.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/spellchecker.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="markitup/skins/markitup/style.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="markitup/sets/default/style.css" />
 	<style type="text/css">
 	#spellcheck-badwords {
 		background-color: #FFFFFF;
@@ -30,7 +28,7 @@
 			<a id="logo" href="http://jquery.com" title="Powered By jQuery"></a>
 	
 			<h1 id="banner">
-				jQuery Spell Checker - MarkItUp demo
+				jQuery Spell Checker - WYMeditor demo
 			</h1>
 			<ul id="nav" class="ui-tabs ui-widget-header ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-corner-all">
 				<li class="ui-state-default ui-corner-top">
@@ -39,10 +37,10 @@
 				<li class="ui-state-default ui-corner-top">
 					<a href="/example.html">Simple Demo</a>
 				</li>
-				<li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active">
+				<li class="ui-state-default ui-corner-top">
 					<a href="/markitup.html">MarkitUp Demo</a>
 				</li>
-				<li class="ui-state-default ui-corner-top">
+				<li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active">
 					<a href="/wymeditor.html">WYMeditor Demo</a>
 				</li>
 				 <li class="ui-state-default ui-corner-top">
@@ -54,7 +52,7 @@
 		<div id="body" class="clearfix ui-widget-content ui-tabs ui-widget ui-corner-all">
 
 			<h2>
-				MarkItUp Example 
+				WYMeditor Demo 
 			</h2>
 			
 			<div class="col-r">
@@ -62,7 +60,7 @@
 				<h2><a href="#example-overview" class="accordian open">Overview</a></h2>
 				<div id="example-overview">
 					<p>
-						This page shows how this spellchecker plugin can be used to check the spelling of a MarkItUp editor, using google's spell checking
+						This page shows how this spellchecker plugin can be used to check the spelling of a WYMeditor editor, using google's spell checking
 						service. The plugin also comes with the option of using <a href="http://php.net/manual/en/book.pspell.php">pspell</a>.
 						If you are able to use pspell, you will have greater control over your dictionary. 
 					</p>
@@ -123,82 +121,77 @@
 			<div id="tabs" class="col-l">
 				<ul>
 					<li><a href="#editor-example">Editor</a></li>
-					<li><a href="#markitup-example">Markitup Code</a></li>
+					<li><a href="#wymeditor-example">WYMeditor integration</a></li>
 				</ul>
 				<div id="editor-example">
-<textarea id="markItUp" cols="80" rows="20">
-&lt;h1&gt;Welcome on markItUp!&lt;/h1&gt;
-
-&lt;p&gt;&lt;strong&gt;markItUp!&lt;/strong&gt; is a JavaScript plugin builti on the jQuery library. It allows you to turn any textarea into a markup edita. Html, Textile, Wiki Syntax, Markdown, BBcode or even your own markup sysstem can be easily iimplemented.&lt;/p&gt;
+<textarea id="wymeditor" cols="80" rows="20">
+Hello world! Herer are somme badly speldt wordss.
 </textarea>
 				</div>
-				<div id="markitup-example" class="ui-tabs-hide" style="font-size:92%;padding-top:1.5em;">
+				<div id="wymeditor-example" class="ui-tabs-hide" style="font-size:92%;padding-top:1.5em;">
 					<p>
 						Please read the <a href="http://code.google.com/p/jquery-spellchecker/wiki/Documentation">documentation</a> on how to setup the spellchecker first, and then do the following to get
-						the spellchecker integrated into markitup.
+						the spellchecker integrated into the WYMeditor.
 					</p>
 					<p>
-						Add the following object to your markupSet in the global "mySettings" object, in your sets.js file
+						Download the neccesary spellchecker files, and check the image paths are correct in the spellchecker.css file.
 					</p>
-					<pre class="prettyprint">
-{
-	name: 'Spellcheck', 
-	className: 'spellcheck', 
-	beforeInsert: function(markitup) { 
-		miuSpellchecker(markitup, "en"); 
-	} 
-}</pre>
 					<p>
-						Or if you want to show a drop-down of languages:
+						<a href="http://www.wymeditor.org/download/">Download</a> the WYMeditor source files.
 					</p>
-					<pre class="prettyprint">
-{
-	name: 'Spellcheck', 
-	className: 'spellcheck', 
-	dropMenu : [
-		{name:"English",beforeInsert:function(markitup) { miuSpellchecker(markitup, 'en'); } },
-		{name:"French",beforeInsert:function(markitup) { miuSpellchecker(markitup, 'fr'); } },
-		{name:"Dutch",beforeInsert:function(markitup) { miuSpellchecker(markitup, 'nl'); } },
-		{name:"German",beforeInsert:function(markitup) { miuSpellchecker(markitup, 'de'); } }
-	]
-}</pre>
+					<p>
+						Include the following in the head section of your html document:
+					</p>
+<pre class="prettyprint lang-html">
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; media=&quot;screen&quot; href=&quot;css/spellchecker.css&quot; /&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;js/jquery.spellchecker.js&quot;&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="wymeditor/jquery.wymeditor.min.js"&gt;&lt;/script&gt;
+</pre>
+					<p>Use the following to instantiate WYMeditor, and add the spellchecker button to the toolbar:</p>
 
-					<p>
-						Stick this function within your sets.js file:
-					</p>
 					<pre class="prettyprint">
-function miuSpellchecker(markitup, lang){
-	if ($(markitup.textarea).hasClass("spellcheck-editor")) {
-		$(markitup.textarea).spellchecker("remove");
-	} else {
-		$(markitup.textarea)
-		.spellchecker({
-			engine: "pspell",
-			url: markitup.root+"utils/spellchecker/checkspelling.php",
-			wordlist: {action: "after", element: ".markItUpFooter"},
-			lang: lang,
-			suggestBoxPosition: "above"
-		})
-		.spellchecker("check", function(result){
-			if (result) {
-				$(markitup.textarea).spellchecker("remove");
-				alert('There are no incorrectly spelt words.');
-			}
+$('#wymeditor').wymeditor({
+
+	stylesheet: 'spellchecker.css',
+	postInit: function(wym){
+
+		//construct the button's html
+		var html = "&lt;li class='wym_tools_newbutton'&gt;"
+		+ "&lt;a name='NewButton' href='#'"
+		+ " style='background-image:"
+		+ " url(../wymeditor/skins/default/icons.png)'&gt;"
+		+ "Do something"
+		+ "&lt;/a&gt;&lt;/li&gt;";
+
+		//add the button to the tools box
+		$(wym._box)
+		.find(wym._options.toolsSelector + wym._options.toolsListSelector)
+		.append(html);
+
+		//handle click event
+		$(wym._box)
+		.find('li.wym_tools_newbutton a').click(function() {
+
+			// initiate the spellchecker
+			$(wym._doc.body)
+			.spellchecker({
+				url: "checkspelling.php",
+				lang: "en", 
+				engine: "pspell",
+				suggestBoxPosition: "above",
+				innerDocument: false,
+				wordlist: {
+					action: "append",
+					element: $(".wym_area_main")
+				},  
+			})
+			.spellchecker("check");
 		});
 	}
-}</pre>
-					<p>
-						Add the following CSS to your sets style.css file:
-					</p>
-					<pre class="prettyprint">
-.markItUp .spellcheck a {
-	background-image:url(images/spellcheck.png);
-}</pre>
-					<ul>
-						<li>Create the directory 'markitup/utils/spellchecker', and place <a href="http://jquery-spellchecker.googlecode.com/svn/trunk/checkspelling.php">checkspelling.php</a> in there.</li>
-						<li>Place <a href="http://jquery-spellchecker.googlecode.com/svn/trunk/img/spellcheck.png">spellcheck.png</a> in your set 'images' folder.</li>
-					</ul>
-
+});
+</pre>
+					<p>That's it!</p>
 				</div>
 			</div>
 	
@@ -208,19 +201,61 @@ function miuSpellchecker(markitup, lang){
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="js/prettify.js"></script>
 	<script type="text/javascript" src="js/jquery.spellchecker.js"></script>
-	<script type="text/javascript" src="markitup/jquery.markitup.pack.js"></script>
-	<script type="text/javascript" src="markitup/sets/default/set.js"></script>
+	<script type="text/javascript" src="wymeditor/jquery.wymeditor.min.js"></script>
 	<script type="text/javascript">
-	$(document).ready(function()	{
-		// if document is viewed via subversion, then re-direct to demo page
-		if (/jquery-spellchecker\.googlecode\.com/.test(window.location.hostname) && /svn/.test(window.location)) {
-			window.location = 'http://spellchecker.jquery.badsyntax.co.uk/markitup.html';
-		}
-					
-		$("#tabs").tabs();
-		$('#markItUp').markItUp(mySettings);
-		prettyPrint();
-	});
+		//<![CDATA[
+		$(document).ready(function(){
+
+			// if document is viewed via subversion, then re-direct to demo page
+			if (/jquery-spellchecker\.googlecode\.com/.test(window.location.hostname) && /svn/.test(window.location)) {
+				window.location = 'http://spellchecker.jquery.badsyntax.co.uk/markitup.html';
+			}
+						
+			$("#tabs").tabs();
+
+			$('#wymeditor').wymeditor({
+
+				stylesheet: 'spellchecker.css',
+				postInit: function(wym){
+
+					//construct the button's html
+					var html = "<li class='wym_tools_newbutton'>"
+					+ "<a name='NewButton' href='#'"
+					+ " style='background-image:"
+					+ " url(../wymeditor/skins/default/icons.png)'>"
+					+ "Do something"
+					+ "</a></li>";
+
+					//add the button to the tools box
+					$(wym._box)
+					.find(wym._options.toolsSelector + wym._options.toolsListSelector)
+					.append(html);
+
+					//handle click event
+					$(wym._box)
+					.find('li.wym_tools_newbutton a').click(function() {
+
+						// initiate the spellchecker
+						$(wym._doc.body)
+						.spellchecker({
+							url: "checkspelling.php",
+							lang: "en", 
+							engine: "pspell",
+							suggestBoxPosition: "above",
+							innerDocument: false,
+							wordlist: {
+								action: "append",
+								element: $(".wym_area_main")
+							},  
+						})
+						.spellchecker("check");
+					});
+				}
+			});
+
+			prettyPrint();
+		});
+		//]]>
 	</script>
 	<script type="text/javascript">
 		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

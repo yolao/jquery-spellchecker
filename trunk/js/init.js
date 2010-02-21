@@ -37,7 +37,7 @@
 		e.preventDefault();
 		var self = this;
 		
-		if (/^remove/.test($(this).html())) {
+		if (/^remove/i.test($.trim($(this).text()))) {
 			$("#content").spellchecker("remove");
 			$(this).html("Check Spelling");
 		} else {
@@ -46,7 +46,8 @@
 			$("#content")
 			.spellchecker("remove")
 			.spellchecker({
-				engine: $("#service").val()
+				engine: $("#service").val(),
+				innerDocument: true
 			})
 			.spellchecker("check", function(result){
 				$(self).html("Remove Spelling");			
