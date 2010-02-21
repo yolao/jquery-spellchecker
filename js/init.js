@@ -44,7 +44,6 @@
 			$(".loading").show();
 
 			$("#content")
-			.spellchecker("remove")
 			.spellchecker({
 				engine: $("#service").val(),
 				innerDocument: true
@@ -70,7 +69,6 @@
 			$("#text-content").spellchecker("remove");
 		}
 		$("#text-content")
-		.spellchecker("remove")
 		.spellchecker({
 			engine: $("#textarea-service").val(),
 			lang: $("#textarea-lang").val(),

@@ -59,7 +59,7 @@
 			var self = this, node = this.$domObj.get(0).nodeName, 
 			tagExp = '<[^>]+>', 
 			puncExp = '^[^a-zA-Z\\u00A1-\\uFFFF]|[^a-zA-Z\\u00A1-\\uFFFF]+[^a-zA-Z\\u00A1-\\uFFFF]|[^a-zA-Z\\u00A1-\\uFFFF]$|\\n|\\t|\\s{2,}';
-		
+
 			if (node == "TEXTAREA" || node == "INPUT") {
 				this.type = 'textarea';
 				var text = $.trim(
@@ -292,14 +292,14 @@
 		},
 		
 		// remove spell check formatting
-		remove : function() {
+		remove : function(destroy) {
+			destroy = destroy || true;
 			$(".spellcheck-word-highlight").each(function(){
 				$(this).after(this.innerHTML).remove()
 			});
-			$("#spellcheck-badwords").remove();
+			$("#spellcheck-badwords, #spellcheck-suggestbox-words, #spellcheck-suggestbox-foot, #spellcheck-suggestbox").remove();
 			$(this.domObj).removeClass("spellcheck-container");
-			this.elements.$suggestBox.remove();
-			$(this.domObj).data('spellchecker', null);
+			(destroy) && $(this.domObj).data('spellchecker', null);
 		},
 		
 		// sends post request, return JSON object
@@ -323,7 +323,8 @@
 		// creates the suggestbox and stores the elements in an array for later use
 		createElements : function(){
 			var self = this;
-			this.elements.$suggestWords = $("#spellcheck-suggestbox-words").length ? $("#spellcheck-suggestbox-words") :
+			this.remove(false);
+			this.elements.$suggestWords =
 				$('<div id ="spellcheck-suggestbox-words"></div>')
 			this.elements.$ignoreWord = 
 				$('<a href="#">Ignore Word</a>')
@@ -343,14 +344,14 @@
 					e.preventDefault();
 					self.addToDictionary();
 				});
-			this.elements.$suggestFoot = 
+			this.elements.$suggestFoot =  
 				$('<div id="spellcheck-suggestbox-foot"></div>')
 				.append(this.elements.$ignoreWord)
 				.append(this.elements.$ignoreAllWords)
 				.append(this.options.engine == "pspell" ? this.elements.$ignoreWordsForever : false);
 			this.elements.$badwords = 
 				$('<div id="spellcheck-badwords"></div>');
-			this.elements.$suggestBox = $("#spellcheck-suggestbox").length ? $("#spellcheck-suggestbox") :   
+			this.elements.$suggestBox =    
 				$('<div id="spellcheck-suggestbox"></div>')
 				.append(this.elements.$suggestWords)
 				.append(this.elements.$suggestFoot)
