@@ -88,7 +88,7 @@ $("textarea#text-content")
         url: "checkspelling.php",       // default spellcheck url
         lang: "en",                     // default language 
         engine: "pspell",               // pspell or google
-        addToDictionary: false,         // display option to add to word to dictionary (pspell only)
+        addToDictionary: false,         // display option to add word to dictionary (pspell only)
         wordlist: {
                 action: "after",               // which jquery dom insert action
                 element: $("#text-content")    // which object to apply above method
