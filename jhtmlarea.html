@@ -222,14 +222,10 @@ $('#wymeditor').wymeditor({
 					["p", "h1", "h2", "h3", "h4", "h5", "h6"],
 					["link", "unlink", "|", "image"],			 
 					[{
-						// This is how to add a completely custom Toolbar Button
 						css: "check-spelling-button",
-						text: "Save",
+						text: "Check spelling",
 						action: function(btn) {
-							// 'this' = jHtmlArea object
-							// 'btn' = jQuery object that represents the <A> "anchor" tag for the Toolbar Button
 							// initiate the spellchecker
-							console.debug(this);
 							$(this.editor.body)
 							.spellchecker({
 								url: "checkspelling.php",
@@ -244,34 +240,8 @@ $('#wymeditor').wymeditor({
 							})
 							.spellchecker("check");
 						}
-					    }]
+					}]
 				]
-			});
-
-			return;
-			$('#wymeditor').wymeditor({
-
-				postInit: function(wym){
-
-					//construct the button's html
-					var html = "<li class='wym_tools_newbutton'>"
-					+ "<a name='NewButton' href='#'"
-					+ " style='background-image:"
-					+ " url(/img/spellcheck.png)'>"
-					+ "Do something"
-					+ "</a></li>";
-
-					//add the button to the tools box
-					$(wym._box)
-					.find(wym._options.toolsSelector + wym._options.toolsListSelector)
-					.append(html);
-
-					//handle click event
-					$(wym._box)
-					.find('li.wym_tools_newbutton a').click(function() {
-
-					});
-				}
 			});
 
 			prettyPrint();
