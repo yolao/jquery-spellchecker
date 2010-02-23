@@ -218,7 +218,7 @@
 		replaceWord : function(text, replace){
 			return text
 				.replace(
-					new RegExp("([^a-zA-Z\\u00A1-\\uFFFF])("+this.$curWord.text()+")([^a-zA-Z\\u00A1-\\uFFFF])", "g"),
+					new RegExp("([^a-zA-Z\\u00A1-\\uFFFF]?)("+this.$curWord.text()+")([^a-zA-Z\\u00A1-\\uFFFF]?)", "g"),
 					'$1'+replace+'$3'
 				)
 				.replace(
