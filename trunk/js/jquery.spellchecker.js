@@ -46,6 +46,12 @@
 			var self = this;
 			this.createElements();
 			this.$domObj.addClass("spellcheck-container");
+			// hide the suggest box on document click
+			$(document).bind("click", function(e){
+				(!$(e.target).hasClass("spellcheck-word-highlight") && 
+				!$(e.target).parents().filter("#spellcheck-suggestbox").length) &&
+				self.hideBox();
+			});
 		},
 
 		// checks a chunk of text for bad words, then either shows the words below the original element (if texarea) or highlights the bad words
@@ -147,7 +153,6 @@
 					(offset.top + $word.outerHeight()) + "px")
 			}).fadeIn(200);
 
-			this.elements.$focusHelper.focus();
 			this.elements.$suggestWords.html('<em>Loading..</em>');
 
 			this.postJson(this.options.url, {
@@ -171,7 +176,6 @@
 					.mousedown(function(e){
 						e.preventDefault();
 						self.replace(this.innerHTML);
-						self.elements.$focusHelper.trigger("blur");
 					})
 				);
 			}								
@@ -338,12 +342,6 @@
 
 			this.remove(false);
 
-			this.elements.$focusHelper = 
-				$('<input type="text" id="spellcheck-focus-helper" />')
-				.blur(function(){
-					self.hideBox();
-				})
-				.prependTo(this.elements.$body);
 			this.elements.$suggestWords =
 				$('<div id ="spellcheck-suggestbox-words"></div>')
 			this.elements.$ignoreWord = 
@@ -351,21 +349,18 @@
 				.click(function(e){
 					e.preventDefault();
 					self.ignore();
-					self.elements.$focusHelper.trigger("blur");
 				});
 			this.elements.$ignoreAllWords = 
 				$('<a href="#">Ignore all</a>')
 				.click(function(e){
 					e.preventDefault();
 					self.ignoreAll();
-					self.elements.$focusHelper.trigger("blur");
 				});
 			this.elements.$ignoreWordsForever = 
 				$('<a href="#" title="ignore word forever (add to dictionary)">Ignore forever</a>')
 				.click(function(e){
 					e.preventDefault();
 					self.addToDictionary();
-					self.elements.$focusHelper.trigger("blur");
 				});
 			this.elements.$suggestFoot =  
 				$('<div id="spellcheck-suggestbox-foot"></div>')
