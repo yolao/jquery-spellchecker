@@ -176,6 +176,7 @@
 					.mousedown(function(e){
 						e.preventDefault();
 						self.replace(this.innerHTML);
+						self.hideBox();
 					})
 				);
 			}								
@@ -349,18 +350,21 @@
 				.click(function(e){
 					e.preventDefault();
 					self.ignore();
+					self.hideBox();
 				});
 			this.elements.$ignoreAllWords = 
 				$('<a href="#">Ignore all</a>')
 				.click(function(e){
 					e.preventDefault();
 					self.ignoreAll();
+					self.hideBox();
 				});
 			this.elements.$ignoreWordsForever = 
 				$('<a href="#" title="ignore word forever (add to dictionary)">Ignore forever</a>')
 				.click(function(e){
 					e.preventDefault();
 					self.addToDictionary();
+					self.hideBox();
 				});
 			this.elements.$suggestFoot =  
 				$('<div id="spellcheck-suggestbox-foot"></div>')
