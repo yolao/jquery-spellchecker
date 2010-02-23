@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Filename:	checkspelling.php
  * Project:	http://jquery-spellchecker.googlecode.com
@@ -8,7 +7,6 @@
  *
  */
 
-
 !isset($_REQUEST['engine']) and exit('error: no spell engine specified');
 
 $Spelling = new Spelling($_REQUEST['engine']);
@@ -16,7 +14,7 @@ $Spelling = new Spelling($_REQUEST['engine']);
 class Spelling {
 
 	// site specific personal dictionary folder, needs to have write perms
-	protected $pspell_personal_dictionary = '/srv/projects/jquery-spellchecker.localdomain/dictionary';
+	protected $pspell_personal_dictionary = './dictionary';
 
 	// default language
 	protected $lang = 'en';
