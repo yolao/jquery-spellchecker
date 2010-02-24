@@ -173,6 +173,7 @@
 				this.elements.$suggestWords.append(
 					$('<a href="#">'+json[i]+'</a>')
 					.addClass((!i?'first':''))
+					.click(function(){ return false; })
 					.mousedown(function(e){
 						e.preventDefault();
 						self.replace(this.innerHTML);
