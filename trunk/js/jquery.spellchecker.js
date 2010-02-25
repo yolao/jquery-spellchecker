@@ -12,11 +12,14 @@
 		
 		spellchecker : function(options, callback){
 			return this.each(function(){
-				if ($(this).data('spellchecker') && $(this).data("spellchecker")[options]){
-					$(this).data("spellchecker")[options](callback);
+				var obj = $(this).data('spellchecker');
+				if (obj && String === options.constructor && obj[options]) {
+					obj[options](callback);
+				} else if (obj) {
+					obj.init();
 				} else {
-					$(this).data('spellchecker', new SpellChecker(this, (options && options.constructor === Object) && options || null));
-					(options && options.constructor == String) && $(this).data("spellchecker")[options](callback);
+					$(this).data('spellchecker', new SpellChecker(this, (Object === options.constructor ? options : null)));
+					(String === options.constructor) && $(this).data('spellchecker')[options](callback);
 				}
 			});
 		}
@@ -24,15 +27,15 @@
 
 	var SpellChecker = function(domObj, options) {
 		this.options = $.extend({
-			url: "checkspelling.php",	// default spellcheck url
-			lang: "en",			// default language 
-			engine: "pspell",		// pspell or google
+			url: 'checkspelling.php',	// default spellcheck url
+			lang: 'en',			// default language 
+			engine: 'pspell',		// pspell or google
 			addToDictionary: false,		// display option to add word to dictionary (pspell only)
 			wordlist: {
-				action: "after",	// which jquery dom insert action
+				action: 'after',	// which jquery dom insert action
 				element: domObj		// which object to apply above method
 			},
-			suggestBoxPosition: "below",	// position of suggest box; above or below the highlighted word
+			suggestBoxPosition: 'below',	// position of suggest box; above or below the highlighted word
 			innerDocument: false		// if you want the badwords highlighted in the html then set to true
 		}, options || {});
 		this.$domObj = $(domObj);
@@ -45,11 +48,11 @@
 		init : function(){
 			var self = this;
 			this.createElements();
-			this.$domObj.addClass("spellcheck-container");
+			this.$domObj.addClass('spellcheck-container');
 			// hide the suggest box on document click
-			$(document).bind("click", function(e){
-				(!$(e.target).hasClass("spellcheck-word-highlight") && 
-				!$(e.target).parents().filter("#spellcheck-suggestbox").length) &&
+			$(document).bind('click', function(e){
+				(!$(e.target).hasClass('spellcheck-word-highlight') && 
+				!$(e.target).parents().filter('.spellcheck-suggestbox').length) &&
 				self.hideBox();
 			});
 		},
@@ -61,22 +64,22 @@
 			tagExp = '<[^>]+>', 
 			puncExp = '^[^a-zA-Z\\u00A1-\\uFFFF]|[^a-zA-Z\\u00A1-\\uFFFF]+[^a-zA-Z\\u00A1-\\uFFFF]|[^a-zA-Z\\u00A1-\\uFFFF]$|\\n|\\t|\\s{2,}';
 
-			if (node == "TEXTAREA" || node == "INPUT") {
+			if (node == 'TEXTAREA' || node == 'INPUT') {
 				this.type = 'textarea';
 				var text = $.trim(
 					this.$domObj.val()
-					.replace(new RegExp(tagExp, "g"), "")	// strip html tags
-					.replace(new RegExp(puncExp, "g"), " ") // strip punctuation
+					.replace(new RegExp(tagExp, 'g'), '')	// strip html tags
+					.replace(new RegExp(puncExp, 'g'), ' ') // strip punctuation
 				);
 			} else {
 				this.type = 'html';
 				var text = $.trim(
 					this.$domObj.text()
-					.replace(new RegExp(puncExp, "g"), " ") // strip punctuation
+					.replace(new RegExp(puncExp, 'g'), " ") // strip punctuation
 				);
 			}
 			this.postJson(this.options.url, {
-				text: encodeURIComponent(text).replace(/%20/g, "+")
+				text: encodeURIComponent(text).replace(/%20/g, '+')
 			}, function(json){
 				self.type == 'html' && self.options.innerDocument ? 
 				self.highlightWords(json, callback) : 
@@ -85,46 +88,50 @@
 		},
 
 		highlightWords : function(json, callback) {
-			if (!json.length) { callback(true); return; }
+			if (!json.length) { callback.call(this.$domObj, true); return; }
 
 			var self = this, html = this.$domObj.html();
-
+			
 			$.each(json, function(key, replaceWord){
 				html = html.replace(
-					new RegExp("([^a-zA-Z\\u00A1-\\uFFFF])("+replaceWord+")([^a-zA-Z\\u00A1-\\uFFFF])", "g"),
-					'$1<span class=\"spellcheck-word-highlight\">$2</span>$3'
+					new RegExp('([^a-zA-Z\\u00A1-\\uFFFF])('+replaceWord+')([^a-zA-Z\\u00A1-\\uFFFF])', 'g'),
+					'$1<span class="spellcheck-word-highlight">$2</span>$3'
 				);
 			});
-			this.$domObj.html(html).find(".spellcheck-word-highlight").click(function(){
-				self.suggest(this);
+			this.$domObj.html(html).find('.spellcheck-word-highlight').each(function(){
+				self.elements.highlightWords.push(
+					$(this).click(function(){
+						self.suggest(this);
+					})
+				);
 			});
 			(callback) && callback();
 		},
 
 		buildBadwordsBox : function(json, callback){
-			if (!json.length) { callback(true); return; }
+			if (!json.length) { callback.call(this.$domObj, true); return; }
 
 			var self = this, words = [];
 
 			// insert badwords list into dom
-			if (!$("#spellcheck-badwords").length) {
-				$(this.options.wordlist.element)[this.options.wordlist.action](this.elements.$badwords);
-			} else {
-				this.elements.$badwords = $("#spellcheck-badwords");
-			}
+			$(this.options.wordlist.element)[this.options.wordlist.action](this.elements.$badwords);
+
 			// empty the badwords container
 			this.elements.$badwords.empty()
+
 			// append incorrectly spelt words
 			$.each(json, function(key, badword) {
 				if ($.inArray(badword, words) === -1) {
-					$('<span class="spellcheck-word-highlight">'+badword+'</span>')
+					self.elements.highlightWords.push(
+						$('<span class="spellcheck-word-highlight">'+badword+'</span>')
 						.click(function(){ self.suggest(this); })
 						.appendTo(self.elements.$badwords)
-						.after("<span class=\"spellcheck-sep\">,</span> ");
+						.after('<span class="spellcheck-sep">,</span> ')
+					);
 					words.push(badword);
 				}
 			});
-			$(".spellcheck-sep:last", self.elements.$badwords).addClass("spellcheck-sep-last");
+			$('.spellcheck-sep:last', self.elements.$badwords).addClass('spellcheck-sep-last');
 			(callback) && callback();
 		},
 
@@ -135,9 +142,9 @@
 			this.$curWord = $word;
 
 			if (this.options.innerDocument) {
-				this.elements.$suggestBox = this.elements.$body.find("#spellcheck-suggestbox");
-				this.elements.$suggestWords = this.elements.$body.find("#spellcheck-suggestbox-words");
-				this.elements.$suggestFoot = this.elements.$body.find("#spellcheck-suggestbox-foot");
+				this.elements.$suggestBox = this.elements.$body.find('.spellcheck-suggestbox');
+				this.elements.$suggestWords = this.elements.$body.find('.spellcheck-suggestbox-words');
+				this.elements.$suggestFoot = this.elements.$body.find('.spellcheck-suggestbox-foot');
 			}
 
 			this.elements.$suggestFoot.hide();
@@ -152,7 +159,7 @@
 					(offset.top - ($word.outerHeight() + 10)) + "px" :
 					(offset.top + $word.outerHeight()) + "px")
 			}).fadeIn(200);
-
+			
 			this.elements.$suggestWords.html('<em>Loading..</em>');
 
 			this.postJson(this.options.url, {
@@ -193,14 +200,14 @@
 			// position the suggest box
 			self.elements.$suggestBox
 			.css({
-				top :	(this.options.suggestBoxPosition == "above") ||
+				top :	(this.options.suggestBoxPosition == 'above') ||
 					(offset.top + $word.outerHeight() + this.elements.$suggestBox.outerHeight() > viewportHeight + 10) ?
 					(offset.top - (this.elements.$suggestBox.height()+5)) + "px" : 
 					(offset.top + $word.outerHeight() + "px"),
-				width : "auto",
-				left :	(this.elements.$suggestBox.outerWidth() + offset.left > $("body").width() ? 
-					(offset.left - this.elements.$suggestBox.width()) + $word.outerWidth()+"px" : 
-					offset.left+"px")
+				width : 'auto',
+				left :	(this.elements.$suggestBox.outerWidth() + offset.left > $('body').width() ? 
+					(offset.left - this.elements.$suggestBox.width()) + $word.outerWidth() + 'px' : 
+					offset.left + 'px')
 			});
 			
 		},
@@ -215,8 +222,8 @@
 		// replace incorrectly spelt word with suggestion
 		replace : function(replace) {
 			switch(this.type) {
-				case "textarea": this.replaceTextbox(replace); break;
-				case "html": this.replaceHtml(replace); break;
+				case 'textarea': this.replaceTextbox(replace); break;
+				case 'html': this.replaceHtml(replace); break;
 			}
 		},
 
@@ -260,7 +267,7 @@
 		
 		// remove spelling formatting from word to ignore in original element
 		ignore : function() {
-			if (this.type == "textarea") {
+			if (this.type == 'textarea') {
 				this.removeBadword(this.$curWord);
 			} else {
 				this.$curWord.after(this.$curWord.html()).remove();
@@ -270,23 +277,23 @@
 		// remove spelling formatting from all words to ignore in original element
 		ignoreAll : function() {
 			var self = this;
-			if (this.type == "textarea") {
+			if (this.type == 'textarea') {
 				this.removeBadword(this.$curWord);
 			} else {
-				$(".spellcheck-word-highlight", this.$domObj).each(function(){
-					(new RegExp(self.$curWord.text(), "i").test(this.innerHTML)) && 
+				$('.spellcheck-word-highlight', this.$domObj).each(function(){
+					(new RegExp(self.$curWord.text(), 'i').test(this.innerHTML)) && 
 					$(this).after(this.innerHTML).remove(); // remove anchor
 				});
 			}
 		},
 
 		removeBadword : function($domObj){
-			($domObj.next().hasClass("spellcheck-sep")) && $domObj.next().remove();
+			($domObj.next().hasClass('spellcheck-sep')) && $domObj.next().remove();
 			$domObj.remove();
-			if (!$(".spellcheck-sep", this.elements.$badwords).length){
-				this.remove();
+			if (!$('.spellcheck-sep', this.elements.$badwords).length){
+				this.elements.$badwords.remove();
 			} else {
-				$(".spellcheck-sep:last", this.elements.$badwords).addClass("spellcheck-sep-last");
+				$('.spellcheck-sep:last', this.elements.$badwords).addClass('spellcheck-sep-last');
 			}
 		},
 		
@@ -294,7 +301,7 @@
 		addToDictionary : function() {
 			var self= this;
 			this.hideBox(function(){
-				confirm("Are you sure you want to add the word \""+self.$curWord.text()+"\" to the dictionary?") &&
+				confirm('Are you sure you want to add the word "'+self.$curWord.text()+'" to the dictionary?') &&
 				self.postJson(self.options.url, { addtodictionary: self.$curWord.text() }, function(){
 					self.ignoreAll();
 					self.check();
@@ -305,29 +312,28 @@
 		// remove spell check formatting
 		remove : function(destroy) {
 			destroy = destroy || true;
-			this.elements.$body.find(".spellcheck-word-highlight").each(function(){
-				$(this).after(this.innerHTML).remove()
+			$.each(this.elements.highlightWords, function(val){
+				this.after(this.innerHTML).remove()
 			});
-			this.elements.$body
-			.find("#spellcheck-badwords, #spellcheck-suggestbox-words, #spellcheck-suggestbox-foot, #spellcheck-suggestbox, #spellcheck-focus-helper")
-			.remove();
-			$(this.domObj).removeClass("spellcheck-container");
+			this.elements.$badwords.remove();
+                        this.elements.$suggestBox.remove();
+			$(this.domObj).removeClass('spellcheck-container');
 			(destroy) && $(this.domObj).data('spellchecker', null);
 		},
 		
 		// sends post request, return JSON object
 		postJson : function(url, data, callback){
 			var xhr = $.ajax({
-				type : "POST",
+				type : 'POST',
 				url : url,
 				data : $.extend(data, {
 					engine: this.options.engine, 
 					lang: this.options.lang
 				}),
-				dataType : "json",
+				dataType : 'json',
 				cache : false,
 				error : function(XHR, status, error) {
-					alert("Sorry, there was an error processing the request.");
+					alert('Sorry, there was an error processing the request.');
 				},
 				success : function(json){
 					(callback) && callback(json);
@@ -340,42 +346,40 @@
 		createElements : function(){
 			var self = this;
 
-			this.elements.$body = this.options.innerDocument ? this.$domObj.parents().filter("html:first").find("body") : $("body");
-
-			this.remove(false);
-
-			this.elements.$suggestWords =
-				$('<div id ="spellcheck-suggestbox-words"></div>')
-			this.elements.$ignoreWord = 
+			this.elements.$body = this.options.innerDocument ? this.$domObj.parents().filter('html:first').find("body") : $('body');
+			this.elements.highlightWords = [];
+			this.elements.$suggestWords = this.elements.$suggestWords ||
+				$('<div></div>').addClass('spellcheck-suggestbox-words');
+			this.elements.$ignoreWord = this.elements.$ignoreWord ||
 				$('<a href="#">Ignore Word</a>')
 				.click(function(e){
 					e.preventDefault();
 					self.ignore();
 					self.hideBox();
 				});
-			this.elements.$ignoreAllWords = 
+			this.elements.$ignoreAllWords = this.elements.$ignoreAllWords ||
 				$('<a href="#">Ignore all</a>')
 				.click(function(e){
 					e.preventDefault();
 					self.ignoreAll();
 					self.hideBox();
 				});
-			this.elements.$ignoreWordsForever = 
+			this.elements.$ignoreWordsForever = this.elements.$ignoreWordsForever ||
 				$('<a href="#" title="ignore word forever (add to dictionary)">Ignore forever</a>')
 				.click(function(e){
 					e.preventDefault();
 					self.addToDictionary();
 					self.hideBox();
 				});
-			this.elements.$suggestFoot =  
-				$('<div id="spellcheck-suggestbox-foot"></div>')
+			this.elements.$suggestFoot = this.elements.$suggestFoot ||
+				$('<div></div>').addClass('spellcheck-suggestbox-foot')
 				.append(this.elements.$ignoreWord)
 				.append(this.elements.$ignoreAllWords)
 				.append(this.options.engine == "pspell" && self.options.addToDictionary ? this.elements.$ignoreWordsForever : false);
-			this.elements.$badwords = 
-				$('<div id="spellcheck-badwords"></div>');
-			this.elements.$suggestBox =    
-				$('<div id="spellcheck-suggestbox"></div>')
+			this.elements.$badwords = this.elements.$badwords ||
+				$('<div></div>').addClass('spellcheck-badwords');
+			this.elements.$suggestBox = this.elements.$suggestBox ||
+				$('<div></div>').addClass('spellcheck-suggestbox')
 				.append(this.elements.$suggestWords)
 				.append(this.elements.$suggestFoot)
 				.prependTo(this.elements.$body);
